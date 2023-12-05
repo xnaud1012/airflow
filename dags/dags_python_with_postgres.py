@@ -20,7 +20,7 @@ with DAG(
                 task_id = kwargs.get('ti').task_id
                 run_id = kwargs.get('ti').run_id
                 msg = 'insert 수행'
-                sql = 'insert into postgres_test values (%s,%s,%s,%s);'
+                sql = 'insert into test values (%s,%s,%s,%s);'
                 cursor.execute(sql,(dag_id,task_id,run_id,msg))
                 conn.commit()
 
