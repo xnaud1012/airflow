@@ -4,9 +4,8 @@ from airflow.operators.python import PythonOperator
 
 with DAG(
     dag_id='dags_python_with_postgres',
-    schedule="1 0 * * *", #크론 스케줄 : 분,시,일,월,요일 / 주기마다 작업.
+    schedule="2 0 * * *", #크론 스케줄 : 분,시,일,월,요일 / 주기마다 작업.  
     start_date=pendulum.datetime(2023,12,1, tz='Asia/Seoul'),
-    schedule=None,
     catchup=False
 ) as dag:
 
