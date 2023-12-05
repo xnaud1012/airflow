@@ -4,6 +4,7 @@ from airflow.operators.python import PythonOperator
 
 with DAG(
     dag_id='dags_python_with_postgres',
+    schedule="1 0 * * *", #크론 스케줄 : 분,시,일,월,요일 / 주기마다 작업.
     start_date=pendulum.datetime(2023,12,1, tz='Asia/Seoul'),
     schedule=None,
     catchup=False
@@ -16,7 +17,7 @@ with DAG(
 
         with closing(psycopg2.connect(host=ip, dbname=dbname, user=user, password=passwd, port=int(port))) as conn:
             with closing(conn.cursor()) as cursor:
-                dag_id = kwargs.get('ti').dag_id
+                dag_id = kwargs.get('ti').dag_id                
                 task_id = kwargs.get('ti').task_id
                 run_id = kwargs.get('ti').run_id
                 msg = 'insert 수행'
