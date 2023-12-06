@@ -6,6 +6,7 @@ with DAG(
         dag_id='dags_python_with_postgres',
         start_date=pendulum.datetime(2023, 4, 1, tz='Asia/Seoul'),
         schedule=None,
+        dagbag_import_timeout =120,
         catchup=False
 ) as dag:
     def insrt_postgres(postgres_conn_id, **kwargs):
