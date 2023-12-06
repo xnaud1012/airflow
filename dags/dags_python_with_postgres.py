@@ -19,8 +19,8 @@ with DAG(
                 task_id = kwargs.get('ti').task_id
                 run_id = kwargs.get('ti').run_id
                 msg = 'hook insrt 수행'
-                sql = 'insert into public.test values (%s,%s,%s,%s);'
-                cursor.execute(sql, (dag_id, task_id, run_id, msg))
+                sql = 'INSERT INTO cnuh.test (test_id, test_01, test_02, test_03) VALUES('+'100', '100', '100', '100'+')'
+                cursor.execute(sql)
                 conn.commit()
 
     insrt_postgres_with_hook = PythonOperator(
