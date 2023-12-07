@@ -1,8 +1,6 @@
 from airflow import DAG
-from datetime import datetime
 import pendulum
 from airflow.decorators import task
-from airflow.operators.python import PythonOperator
 from airflow.providers.oracle.hooks.oracle import OracleHook
 from airflow.providers.postgres.hooks.postgres import PostgresHook
 
