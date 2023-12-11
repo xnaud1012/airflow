@@ -3,21 +3,20 @@ from airflow import DAG
 import pendulum
 from airflow.decorators import task
 #from airflow.providers.oracle.hooks.oracle import OracleHook
+from airflow.hooks.base import BaseHook 
 from airflow.providers.postgres.hooks.postgres import PostgresHook
+
 import cx_Oracle
 table_name="test"
 @task
 def get_data_from_oracle():
-    db_user = "your_username"
-    db_password = "your_password"
-    db_host = "your_host"
-    db_port = "your_port"
-    db_service = "your_service_name"
+    rdb = BaseHook.get_connection('conn-db-oracle-custom')
+    ora_con = cx_Oracle.connect(dsn=rdb.get_extra(),
+                                user=rdb.login,
+                                password=rdb.password,
+                                encoding="UTF-8")
 
-    dsn = cx_Oracle.makedsn(db_host, db_port, service_name=db_service)
-    connection_string = f"{db_user}/{db_password}@{dsn}"
-    connection = cx_Oracle.connect(connection_string)
-    cursor = connection.cursor()
+    ora_cursor = ora_con.cursor()    
 
     #oracle_hook = OracleHook('conn-db-oracle-custom')
     #data = oracle_hook.get_pandas_df(sql=f"SELECT * FROM {table_name}") ## transaction  자재로 쓸 수 있음. 오라클로부터 Extract
@@ -25,17 +24,17 @@ def get_data_from_oracle():
     
     try:
         query = "SELECT * FROM test"
-        cursor.execute(query)    
-        rows = cursor.fetchall()
-        columns = [col[0] for col in cursor.description]
+        ora_cursor.execute(query)    
+        rows = ora_cursor.fetchall()
+        columns = [col[0] for col in ora_cursor.description]
         result_as_dict = [dict(zip(columns, row)) for row in rows]
                      
         for row in rows:
             print(row)    
 
     finally:
-        cursor.close()
-        connection.close()
+        ora_cursor.close()
+        ora_con.close()
 
     return result_as_dict
 
