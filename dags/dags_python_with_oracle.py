@@ -4,13 +4,14 @@ import pendulum
 from airflow.decorators import task
 #from airflow.providers.oracle.hooks.oracle import OracleHook
 from airflow.hooks.base import BaseHook 
-from airflow.providers.postgres.hooks.postgres import PostgresHook
 
+from airflow.providers.postgres.hooks.postgres import PostgresHook
 import cx_Oracle
 table_name="test"
 @task
 def get_data_from_oracle():
     rdb = BaseHook.get_connection('conn-db-oracle-custom')
+    print(rdb)
     ora_con = cx_Oracle.connect(dsn=rdb.get_extra(),
                                 user=rdb.login,
                                 password=rdb.password,
