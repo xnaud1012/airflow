@@ -2,7 +2,7 @@
 from airflow import DAG
 import pendulum
 from airflow.decorators import task
-from airflow.providers.oracle.hooks.oracle import OracleHook
+#from airflow.providers.oracle.hooks.oracle import OracleHook
 from airflow.providers.postgres.hooks.postgres import PostgresHook
 import cx_Oracle
 table_name="test"
