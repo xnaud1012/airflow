@@ -18,7 +18,7 @@ table_name="test"
 def get_data_from_oracle():
      oracle_task = OracleOperator(
         task_id='oracle',
-        oracle_conn_id='oracle_test',
+        oracle_conn_id='conn-db-oracle-custom',
         sql='SELECT * FROM DUAL',
         dag=dag,
      )
