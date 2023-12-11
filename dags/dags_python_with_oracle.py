@@ -16,7 +16,8 @@ def print_get_connection():
 def get_data_from_oracle():
     rdb = BaseHook.get_connection('conn-db-oracle-custom')
     print(rdb)
-    ora_con = cx_Oracle.connect(dsn=rdb.get_extra(),
+  
+    ora_con = cx_Oracle.connect(dsn=rdb.extra_dejson.get("dsn"),
                                 user=rdb.login,
                                 password=rdb.password,
                                 encoding="UTF-8")
