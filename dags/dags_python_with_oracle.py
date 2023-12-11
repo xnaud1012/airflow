@@ -9,6 +9,10 @@ from airflow.providers.postgres.hooks.postgres import PostgresHook
 import cx_Oracle
 table_name="test"
 @task
+def print_get_connection():
+    rdb_=BaseHook.get_connection('conn-db-oracle-custom')
+    print(rdb_)
+@task
 def get_data_from_oracle():
     rdb = BaseHook.get_connection('conn-db-oracle-custom')
     print(rdb)
@@ -50,5 +54,6 @@ with DAG(
         schedule=None,
         catchup=False
 ) as dag:
+    print_get_connection()
     data = get_data_from_oracle()
     insert_data_into_postgres(data)
