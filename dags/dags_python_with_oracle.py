@@ -23,7 +23,7 @@ def get_data_from_oracle():
     #return data.to_dict()
     
     try:
-        query = "SELECT * FROM test"
+        query = "SELECT * FROM DUAL"
         ora_cursor.execute(query)    
         rows = ora_cursor.fetchall()
         columns = [col[0] for col in ora_cursor.description]
