@@ -48,7 +48,7 @@ def insert_data_into_postgres(data):
     cursor = post_conn.cursor()
 
     table_name = "test"
-    columns_to_select = ["TEST_ID", "TEST_01", "TEST_02"]
+    columns_to_select = ["test_id", "test_01", "test_02"]
     condition = "1 = 1"  # 선택적인 WHERE 절
 
     query = sql.SQL("SELECT {} FROM {}").format(
