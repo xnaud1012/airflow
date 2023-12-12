@@ -14,7 +14,7 @@ def print_get_connection():
  
     return rdb_.extra_dejson.get("dsn")+rdb_.login+rdb_.password;
 @task
-def get_data_from_oracle(conn):
+def get_data_from_oracle(conn__):
   
     rdb = BaseHook.get_connection('conn-db-oracle-custom')
 
@@ -57,6 +57,6 @@ with DAG(
         schedule=None,
         catchup=False
 ) as dag:
-    connections=print_get_connection()
-    data = get_data_from_oracle(connections)
+    connections_=print_get_connection()
+    data = get_data_from_oracle(connections_)
     insert_data_into_postgres(data)
