@@ -7,20 +7,17 @@ from airflow.hooks.base import BaseHook
 
 from airflow.providers.postgres.hooks.postgres import PostgresHook
 import cx_Oracle
-table_name="test"
+
+
 @task
-def print_get_connection():
-    conn_info=BaseHook.get_connection('conn-db-oracle-custom') 
-    return conn_info
-@task
-def get_data_from_oracle(conn__):
+def get_data_from_oracle():
   
-    #rdb = BaseHook.get_connection('conn-db-oracle-custom')
+    rdb = BaseHook.get_connection('conn-db-oracle-custom')
 
   
-    ora_con = cx_Oracle.connect(dsn=conn__.extra_dejson.get("dsn"),
-                                user=conn__.login,
-                                password=conn__.password,
+    ora_con = cx_Oracle.connect(dsn=rdb.extra_dejson.get("dsn"),
+                                user=rdb.login,
+                                password=rdb.password,
                                 encoding="UTF-8")
 
     ora_cursor = ora_con.cursor()    
@@ -77,6 +74,6 @@ with DAG(
         schedule=None,
         catchup=False
 ) as dag:
-    connections_=print_get_connection()
-    data = get_data_from_oracle(connections_)
+
+    data = get_data_from_oracle()
     insert_data_into_postgres(data)
