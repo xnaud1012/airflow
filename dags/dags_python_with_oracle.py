@@ -11,11 +11,11 @@ table_name="test"
 @task
 def print_get_connection():
     rdb_=BaseHook.get_connection('conn-db-oracle-custom')
-    print(rdb_)
+ 
     return rdb_;
 @task
 def get_data_from_oracle(conn):
-    print(conn)
+  
     rdb = BaseHook.get_connection('conn-db-oracle-custom')
 
   
