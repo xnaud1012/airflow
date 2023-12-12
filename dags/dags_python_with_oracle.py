@@ -5,7 +5,7 @@ from airflow.decorators import task
 #from airflow.providers.oracle.hooks.oracle import OracleHook
 from airflow.hooks.base import BaseHook 
 
-from airflow.providers.postgres.hooks.postgres import PostgresHook
+
 import cx_Oracle
 
 
@@ -42,9 +42,9 @@ def get_data_from_oracle():
 def insert_data_into_postgres(data):
     import psycopg2
     from psycopg2 import sql
-    pg_hook = PostgresHook('conn-db-postgres-custom')
+    pg_hook = BaseHook('conn-db-postgres-custom')
     #pg_hook.insert_rows(table="test" ,rows=data)
-    post_conn = psycopg2.connect(dbname=pg_hook.database, user=pg_hook.login, password=pg_hook.password, host=pg_hook.host, port=pg_hook.port)
+    post_conn = psycopg2.connect(dbname=pg_hook.database, user=pg_hook.login, password=pg_hook.password, host=pg_hook.extra_dejson.get("host"), port=pg_hook.port)
     cursor = post_conn.cursor()
 
     table_name = "test"
