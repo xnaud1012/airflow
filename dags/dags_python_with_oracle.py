@@ -31,7 +31,7 @@ def get_data_from_oracle(conn__):
     #return data.to_dict()
     
     try:
-        query = "SELECT * FROM DUAL"
+        query = "SELECT * FROM test"
         ora_cursor.execute(query)    
         rows = ora_cursor.fetchall()
         columns = [col[0] for col in ora_cursor.description]
