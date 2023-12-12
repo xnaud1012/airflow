@@ -12,10 +12,12 @@ table_name="test"
 def print_get_connection():
     rdb_=BaseHook.get_connection('conn-db-oracle-custom')
     print(rdb_)
+    return rdb_;
 @task
-def get_data_from_oracle():
+def get_data_from_oracle(conn):
+    print(conn)
     rdb = BaseHook.get_connection('conn-db-oracle-custom')
-    print(rdb)
+
   
     ora_con = cx_Oracle.connect(dsn=rdb.extra_dejson.get("dsn"),
                                 user=rdb.login,
@@ -55,6 +57,6 @@ with DAG(
         schedule=None,
         catchup=False
 ) as dag:
-    print_get_connection()
-    data = get_data_from_oracle()
+    connections=print_get_connection()
+    data = get_data_from_oracle(connections)
     insert_data_into_postgres(data)
