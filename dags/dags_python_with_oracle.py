@@ -44,7 +44,7 @@ def insert_data_into_postgres(data):
     from psycopg2 import sql
     pg_hook = BaseHook.get_connection('conn-db-postgres-custom')
     #pg_hook.insert_rows(table="test" ,rows=data)
-    post_conn = psycopg2.connect(dbname=pg_hook.database, user=pg_hook.login, password=pg_hook.password, host=pg_hook.extra_dejson.get("host"), port=pg_hook.port)
+    post_conn = psycopg2.connect(dbname=pg_hook.schema, user=pg_hook.login, password=pg_hook.password, host=pg_hook.extra_dejson.get("host"), port=pg_hook.port)
     cursor = post_conn.cursor()
 
     table_name = "test"
