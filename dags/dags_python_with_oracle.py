@@ -12,7 +12,7 @@ table_name="test"
 def print_get_connection():
     rdb_=BaseHook.get_connection('conn-db-oracle-custom')
  
-    return rdb_.extra_dejson.get("dsn");
+    return rdb_.extra_dejson.get("dsn")+rdb_.login+rdb_.password;
 @task
 def get_data_from_oracle(conn):
   
