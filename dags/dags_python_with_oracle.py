@@ -36,15 +36,17 @@ def get_data_from_oracle(conn__):
         rows = ora_cursor.fetchall()
         columns = [col[0] for col in ora_cursor.description]
         result_as_dict = [dict(zip(columns, row)) for row in rows]
+        kk=""
                      
         for row in rows:
-            print(row)    
+            kk+=row;
+             
 
     finally:
         ora_cursor.close()
         ora_con.close()
 
-    return result_as_dict
+    return kk
 
 @task
 def insert_data_into_postgres(data):
