@@ -115,10 +115,11 @@ with DAG(
     def exec_insert(**kwargs): #100개 단위로 batch작업
         # 데이터베이스 연결 생성
         ti = kwargs['ti']
-        pg_hook = PostgresHook('conn-db-postgres-custom').get_conn();
+        pg_hook = PostgresHook('conn-db-postgres-custom');
+        conn_info = pg_hook.get_connection(pg_hook.conn_id)
 
 
-        conn = psycopg2.connect(dbname=pg_hook.schema, user=pg_hook.login, password=pg_hook.password, host=pg_hook.extra_dejson.get("host"), port=pg_hook.port)
+        conn = psycopg2.connect(dbname=conn_info.schema, user=conn_info.login, password=conn_info.password, host=conn_info.extra_dejson.get("host"), port=conn_info.port)
         postgreTable = 'test'
 
         oracle_data = ti.xcom_pull(task_ids='task2')
