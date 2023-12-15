@@ -115,7 +115,7 @@ with DAG(
     def exec_insert(**kwargs): #100개 단위로 batch작업
         # 데이터베이스 연결 생성
         ti = kwargs['ti']
-        pg_hook = PostgresHook('conn-db-postgres-custom')
+        pg_hook = PostgresHook('conn-db-postgres-custom').get_conn();
 
 
         conn = psycopg2.connect(dbname=pg_hook.schema, user=pg_hook.login, password=pg_hook.password, host=pg_hook.extra_dejson.get("host"), port=pg_hook.port)
