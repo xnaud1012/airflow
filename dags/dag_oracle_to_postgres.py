@@ -98,6 +98,7 @@ with DAG(
                 
         finally:
             conn.close()   
+        return sql;
 
 
     
