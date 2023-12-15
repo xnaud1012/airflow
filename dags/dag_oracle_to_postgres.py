@@ -93,10 +93,10 @@ with DAG(
             with closing(conn.cursor()) as cur:                
                 
                 sql = f"INSERT INTO test ({insertIntoCol}) VALUES ({','.join(placeholders)})"
-                cur.executemany(sql, tuples) #executemany() 는 psycopg2에서 제공해주는 라이브러리로 bulk upload가능
-            
+                cur.executemany(sql, tuples) #executemany() 는 psycopg2에서 제공해주는 라이브러리로 bulk upload가능            
                 
         finally:
+            conn.commit()
             conn.close()   
         return tuples
      
