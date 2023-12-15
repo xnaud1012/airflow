@@ -115,6 +115,7 @@ with DAG(
     def exec_insert(**kwargs): #100개 단위로 batch작업
         # 데이터베이스 연결 생성
         ti = kwargs['ti']
+   
 
         pg_hook = PostgresHook('conn-db-postgres-custom') 
         conn = pg_hook.get_conn() 
@@ -130,7 +131,7 @@ with DAG(
             
             postgreData = select_from_postgresColumns_toInsert(conn, postgreTable) # 오라클 결과를 집어넣을 postgres 테이블 명 
 
-            placeholders = ["%s",] * int((postgreData['column_count']))        
+            placeholders = ["%s",] * int(postgreData["column_count"])        
             tuples = [tuple(item) for item in rowFromOracle]
 
             with closing(conn.cursor()) as cur:                
