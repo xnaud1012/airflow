@@ -98,8 +98,8 @@ with DAG(
                 
         finally:
             conn.close()   
-        return sql;
-
+        return tuples
+     
 
     
     select_from_oracle() >> matchingModel() >> exec_insert()
