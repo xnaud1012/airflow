@@ -42,40 +42,15 @@ with DAG(
         ora_con.close()
 
         ti.xcom_push(key="columns", value=columns)
-        ti.xcom_push(key="rows", value=data)
-
-
-    @task(task_id='select_oracle_task')
-    def select_from_postgresColumns_toInsert(conn, tbl_name):
-        try:
-            cursor = conn.cursor()
-            query = """
-                SELECT column_name 
-                FROM information_schema.columns 
-                WHERE table_name = %s AND table_schema = 'public'
-            """
-            cursor.execute(query, (tbl_name,))
-            result = cursor.fetchall()
-            column_names = [column[0] for column in result]
-            columns_string = ', '.join(column_names)
-            cursor.close()
-
-            return {
-                'column_name': columns_string, ## insert into 할 컬럼 명
-                'column_count': len(result) ## insert into 할 컬럼 개수
-            }
-
-        except psycopg2.Error as e:
-            print("Database error: ", e)
-            return None
+        ti.xcom_push(key="rows", value=data)    
+    
 
     @task(task_id='task2')
     def matchingModel(**kwargs): ## postgres와 oracleDB 열 이름 다를 때 서로 매칭 해 주기. 
         ti = kwargs['ti']
         #oracle_data = ti.xcom_pull(task_ids='task1')
         model = ti.xcom_pull(key="columns", task_ids = 'task1')
-        oracle_row = ti.xcom_pull(key="rows", task_ids = 'task1')
-
+        oracle_row = ti.xcom_pull(key="rows", task_ids = 'task1')      
 
         switch_dict = {
         
@@ -84,54 +59,35 @@ with DAG(
             'test_03': 'test_c'
                     }
     
-
+        colname_list=[switch_dict.get(item.lower(), item.lower()) for item in model]
         return {
 
-            "sql":','.join([switch_dict.get(item.lower(), item.lower()) for item in model]),
-            "oracleRow":oracle_row
+            "sql":','.join(colname_list),
+            "oracleRow":oracle_row,
+            "column_count":len(colname_list)
+
         }
 
-    def generate_insert_sql(table, target_fields = None, replace=False, **kwargs) -> str:
-        # insert문 
-        placeholders = [
-                "%s",
-            ] * len('test') ##예시
-
-        if target_fields:
-            target_fields = ", ".join(target_fields)
-            target_fields = f"({target_fields})"
-        else:
-            target_fields = ""
-
-        if not replace:
-            sql = "INSERT INTO "
-        else:
-            sql = "REPLACE INTO "
-        sql += f"{table} {target_fields} VALUES ({','.join(placeholders)})"
-        return sql
+ 
 
 
     @task(task_id='task3')
     def exec_insert(**kwargs): #100개 단위로 batch작업
         # 데이터베이스 연결 생성
-        ti = kwargs['ti']
-   
+        ti = kwargs['ti']  
 
         pg_hook = PostgresHook('conn-db-postgres-custom') 
         conn = pg_hook.get_conn() 
-            
 
-  
-        oracle_data = ti.xcom_pull(task_ids='task2')
-        column_count = ti.xcom_pull(key="column_count", task_ids = 'select_oracle_task')
-
+        oracle_data = ti.xcom_pull(task_ids='task2')       
         insertIntoCol = oracle_data['sql']
         rowFromOracle = oracle_data['oracleRow'] 
+        columnCount = oracle_data['column_count'] 
         
         try: 
             
           
-            placeholders = ["%s",] * int(column_count)        
+            placeholders = ["%s",] * int(columnCount)        
             tuples = [tuple(item) for item in rowFromOracle]
 
             with closing(conn.cursor()) as cur:                
