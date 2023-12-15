@@ -34,7 +34,10 @@ def select_from_oracle():
     ora_cursor.close()
     ora_con.close()
     
-    return columns,data #컬럼들, data들
+    return {
+        "columns": columns,
+        "rows": data
+    }
 
 @task
 def select_from_postgresColumns_toInsert(conn, tbl_name):
@@ -131,9 +134,7 @@ with DAG(
         schedule=None,
         catchup=False
 ) as dag:
-    select_from_oracle_output = select_from_oracle()
-    OracleColumn = select_from_oracle_output.output[0]
-    OracleRow = select_from_oracle_output.output[1]
-    #OracleColumn, OracleRow = select_from_oracle() #oracle로 부터 추출,  
-    insertSQL = matchingModel(OracleColumn);
-    exec_insert(insertSQL,OracleRow)
+    
+    OracleResult = select_from_oracle() #oracle로 부터 추출,  
+    insertSQL = matchingModel(OracleResult['columns']);
+    exec_insert(insertSQL,OracleResult['rows'])
