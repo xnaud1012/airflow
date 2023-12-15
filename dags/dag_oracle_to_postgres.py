@@ -8,10 +8,11 @@ from airflow.decorators import task
 from airflow import DAG
 from airflow.providers.postgres.hooks.postgres import PostgresHook
 
-@task
-def select_from_oracle():
+@task(task_id='task1')
+def select_from_oracle(**kwargs):
     rdb = BaseHook.get_connection('conn-db-oracle-custom')
     data=[]
+    ti = kwargs['ti']
 
     ora_con = cx_Oracle.connect(dsn=rdb.extra_dejson.get("dsn"),
                                 user=rdb.login,
@@ -33,11 +34,9 @@ def select_from_oracle():
     columns = [desc[0] for desc in ora_cursor.description]
     ora_cursor.close()
     ora_con.close()
-    
-    return {
-        "columns": columns,
-        "rows": data
-    }
+
+    ti.xcom_push(key="columns", value=columns)
+    ti.xcom_push(key="rows", value=data)
 
 
 @task(task_id='select_oracle_task')
@@ -64,12 +63,12 @@ def select_from_postgresColumns_toInsert(conn, tbl_name):
         print("Database error: ", e)
         return None
 
-@task(task_id='matching_model_task')
-def matchingModel(**context): ## postgres와 oracleDB 열 이름 다를 때 서로 매칭 해 주기. 
-    ti = context['ti']
-    oracle_data = ti.xcom_pull(task_ids='select_oracle_task')
-    model = oracle_data['columns']
-    oracle_row = oracle_data['rows']
+@task(task_id='task2')
+def matchingModel(**kwargs): ## postgres와 oracleDB 열 이름 다를 때 서로 매칭 해 주기. 
+    ti = kwargs['ti']
+    #oracle_data = ti.xcom_pull(task_ids='task1')
+    model = ti.xcom_pull(key="columns", task_ids = 'task1')
+    oracle_row = ti.xcom_pull(key="rows", task_ids = 'task1')
 
 
     switch_dict = {
@@ -106,17 +105,17 @@ def generate_insert_sql(table, target_fields = None, replace=False, **kwargs) ->
     return sql
 
 
-@task
-def exec_insert(**context): #100개 단위로 batch작업
+@task(task_id='task3')
+def exec_insert(**kwargs): #100개 단위로 batch작업
     # 데이터베이스 연결 생성
-    ti = context['ti']
+    ti = kwargs['ti']
     pg_hook = PostgresHook('conn-db-postgres-custom')
 
 
     conn = psycopg2.connect(dbname=pg_hook.schema, user=pg_hook.login, password=pg_hook.password, host=pg_hook.extra_dejson.get("host"), port=pg_hook.port)
     postgreTable = 'test'
 
-    oracle_data = ti.xcom_pull(task_ids='matching_model_task')
+    oracle_data = ti.xcom_pull(task_ids='task2')
     insertIntoCol = oracle_data['sql']
     rowFromOracle = oracle_data['oracleRow'] 
     
