@@ -115,7 +115,10 @@ with DAG(
     def exec_insert(**kwargs): #100개 단위로 batch작업
         # 데이터베이스 연결 생성
         ti = kwargs['ti']
-        conn = PostgresHook('conn-db-postgres-custom');      
+
+        pg_hook = PostgresHook('conn-db-postgres-custom') 
+        conn = pg_hook.get_conn() 
+            
 
         postgreTable = 'test'
 
@@ -124,25 +127,20 @@ with DAG(
         rowFromOracle = oracle_data['oracleRow'] 
         
         try: 
-            with closing(conn):
-                # 여기서 연결을 관리
-                conn.commit()
-                postgreData = select_from_postgresColumns_toInsert(conn, postgreTable) # 오라클 결과를 집어넣을 postgres 테이블 명 
-    
-                placeholders = ["%s",] * int((postgreData['column_count']))        
-                tuples = [tuple(item) for item in rowFromOracle]
-    
-                with closing(conn.cursor()) as cur:                
-                    
-                    sql = f"INSERT INTO test ({insertIntoCol}) VALUES ({','.join(placeholders)})"
-                    cur.executemany(sql, tuples) #executemany() 는 psycopg2에서 제공해주는 라이브러리로 bulk upload가능
-                conn.commit()
+            
+            postgreData = select_from_postgresColumns_toInsert(conn, postgreTable) # 오라클 결과를 집어넣을 postgres 테이블 명 
+
+            placeholders = ["%s",] * int((postgreData['column_count']))        
+            tuples = [tuple(item) for item in rowFromOracle]
+
+            with closing(conn.cursor()) as cur:                
                 
-        except psycopg2.Error as e:
-            print("Database error: ", e)
+                sql = f"INSERT INTO test ({insertIntoCol}) VALUES ({','.join(placeholders)})"
+                cur.executemany(sql, tuples) #executemany() 는 psycopg2에서 제공해주는 라이브러리로 bulk upload가능
+            
+                
         finally:
-            # 연결 닫기
-            conn.close()    
+            conn.close()   
 
 
     
