@@ -118,7 +118,7 @@ with DAG(
         pg_hook = PostgresHook('conn-db-postgres-custom')
 
 
-        conn = psycopg2.connect(dbname=pg_hook.schema, user=pg_hook.user, password=pg_hook.password, host=pg_hook.extra_dejson.get("host"), port=pg_hook.port)
+        conn = psycopg2.connect(dbname=pg_hook.schema, user=pg_hook.login, password=pg_hook.password, host=pg_hook.extra_dejson.get("host"), port=pg_hook.port)
         postgreTable = 'test'
 
         oracle_data = ti.xcom_pull(task_ids='task2')
