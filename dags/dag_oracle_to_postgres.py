@@ -131,7 +131,9 @@ with DAG(
         schedule=None,
         catchup=False
 ) as dag:
-
-    OracleColumn, OracleRow = select_from_oracle()
+    select_from_oracle_output = select_from_oracle()
+    OracleColumn = select_from_oracle_output.output[0]
+    OracleRow = select_from_oracle_output.output[1]
+    #OracleColumn, OracleRow = select_from_oracle() #oracle로 부터 추출,  
     insertSQL = matchingModel(OracleColumn);
     exec_insert(insertSQL,OracleRow)

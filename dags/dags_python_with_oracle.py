@@ -71,7 +71,6 @@ def insert_data_into_postgres(data):
 
     cursor.execute(query)
     result = cursor.fetchall()
-
     cursor.close()
 
     return result
