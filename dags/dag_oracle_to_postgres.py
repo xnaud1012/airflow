@@ -40,7 +40,7 @@ def select_from_oracle():
     }
 
 
-@task
+@task(task_id='select_oracle_task')
 def select_from_postgresColumns_toInsert(conn, tbl_name):
     try:
         cursor = conn.cursor()
@@ -64,9 +64,10 @@ def select_from_postgresColumns_toInsert(conn, tbl_name):
         print("Database error: ", e)
         return None
 
-def matchingModel(oracle_obj, **context): ## postgres와 oracleDB 열 이름 다를 때 서로 매칭 해 주기. 
+@task(task_id='matching_model_task')
+def matchingModel(**context): ## postgres와 oracleDB 열 이름 다를 때 서로 매칭 해 주기. 
     ti = context['ti']
-    oracle_data = ti.xcom_pull(task_ids=oracle_obj.operator.task_id)
+    oracle_data = ti.xcom_pull(task_ids='select_oracle_task')
     model = oracle_data['columns']
     oracle_row = oracle_data['rows']
 
@@ -106,7 +107,7 @@ def generate_insert_sql(table, target_fields = None, replace=False, **kwargs) ->
 
 
 @task
-def exec_insert(oracleInfo, commit_every=1000, **context): #100개 단위로 batch작업
+def exec_insert(**context): #100개 단위로 batch작업
     # 데이터베이스 연결 생성
     ti = context['ti']
     pg_hook = PostgresHook('conn-db-postgres-custom')
@@ -115,7 +116,7 @@ def exec_insert(oracleInfo, commit_every=1000, **context): #100개 단위로 bat
     conn = psycopg2.connect(dbname=pg_hook.schema, user=pg_hook.login, password=pg_hook.password, host=pg_hook.extra_dejson.get("host"), port=pg_hook.port)
     postgreTable = 'test'
 
-    oracle_data = ti.xcom_pull(task_ids=oracleInfo.operator.task_id)
+    oracle_data = ti.xcom_pull(task_ids='matching_model_task')
     insertIntoCol = oracle_data['sql']
     rowFromOracle = oracle_data['oracleRow'] 
     
