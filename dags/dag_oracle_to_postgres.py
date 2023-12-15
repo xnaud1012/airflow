@@ -121,17 +121,17 @@ with DAG(
         conn = pg_hook.get_conn() 
             
 
-        postgreTable = 'test'
-
+  
         oracle_data = ti.xcom_pull(task_ids='task2')
+        column_count = ti.xcom_pull(key="column_count", task_ids = 'select_oracle_task')
+
         insertIntoCol = oracle_data['sql']
         rowFromOracle = oracle_data['oracleRow'] 
         
         try: 
             
-            postgreData = select_from_postgresColumns_toInsert(conn, postgreTable) # 오라클 결과를 집어넣을 postgres 테이블 명 
-
-            placeholders = ["%s",] * int(postgreData["column_count"])        
+          
+            placeholders = ["%s",] * int(column_count)        
             tuples = [tuple(item) for item in rowFromOracle]
 
             with closing(conn.cursor()) as cur:                
