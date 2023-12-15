@@ -39,6 +39,7 @@ def select_from_oracle():
         "rows": data
     }
 
+
 @task
 def select_from_postgresColumns_toInsert(conn, tbl_name):
     try:
@@ -63,7 +64,9 @@ def select_from_postgresColumns_toInsert(conn, tbl_name):
         print("Database error: ", e)
         return None
 
-def matchingModel(model): ## postgres와 oracleDB 열 이름 다를 때 서로 매칭 해 주기. 
+def matchingModel(oracle_obj): ## postgres와 oracleDB 열 이름 다를 때 서로 매칭 해 주기. 
+    model=oracle_obj.get('columns')
+    oracle_row = oracle_obj.get('rows')
     switch_dict = {
      
         'test_01': 'test_a',
@@ -72,7 +75,11 @@ def matchingModel(model): ## postgres와 oracleDB 열 이름 다를 때 서로 �
                 }
    
 
-    return ','.join([switch_dict.get(item.lower(), item.lower()) for item in model])
+    return {
+
+        "sql":','.join([switch_dict.get(item.lower(), item.lower()) for item in model]),
+        "oracleRow":oracle_row
+    }
 
 def generate_insert_sql(table, target_fields = None, replace=False, **kwargs) -> str:
     # insert문 
@@ -95,13 +102,15 @@ def generate_insert_sql(table, target_fields = None, replace=False, **kwargs) ->
 
 
 @task
-def exec_insert(insertIntoCol, rowFromOracle, commit_every=1000): #100개 단위로 batch작업
+def exec_insert(oracleInfo, commit_every=1000): #100개 단위로 batch작업
     # 데이터베이스 연결 생성
     pg_hook = PostgresHook('conn-db-postgres-custom')
 
 
     conn = psycopg2.connect(dbname=pg_hook.schema, user=pg_hook.login, password=pg_hook.password, host=pg_hook.extra_dejson.get("host"), port=pg_hook.port)
     postgreTable = 'test'
+    insertIntoCol = oracleInfo.get('sql')
+    rowFromOracle=oracleInfo.get('oracleRow')
     
     try: 
         with closing(conn):
@@ -122,11 +131,7 @@ def exec_insert(insertIntoCol, rowFromOracle, commit_every=1000): #100개 단위
         print("Database error: ", e)
     finally:
         # 연결 닫기
-        conn.close()
-
-
-
-    
+        conn.close()    
 
 with DAG(
         dag_id='dat_oracle_to_postgres',
@@ -136,5 +141,5 @@ with DAG(
 ) as dag:
     
     OracleResult = select_from_oracle() #oracle로 부터 추출,  
-    insertSQL = matchingModel(OracleResult['columns']);
-    exec_insert(insertSQL,OracleResult['rows'])
+    insertSQL = matchingModel(OracleResult);
+    exec_insert(insertSQL)
