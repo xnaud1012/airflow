@@ -9,6 +9,7 @@ import psycopg2
 bp = Blueprint(
                "review_plugin",
                __name__,
+               static_folder='static',
                template_folder="templates" # registers airflow/plugins/templates as a Jinja template folder
                )
 
@@ -31,7 +32,7 @@ class reviewAppBuilderBaseView(AppBuilderBaseView):
 v_appbuilder_view = reviewAppBuilderBaseView()
 v_appbuilder_package = {
     "name": "Review", # this is the name of the link displayed
-    "category": "DEV", # 내가 생성하고자 하는 탭 이름.
+    "category": "Custom", # 내가 생성하고자 하는 탭 이름.
     "view": v_appbuilder_view
 }
 
