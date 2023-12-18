@@ -4,8 +4,6 @@ from flask_appbuilder import expose, BaseView as AppBuilderBaseView
 import psycopg2
 
 
-
-
 bp = Blueprint(
                "review_plugin",
                __name__,
