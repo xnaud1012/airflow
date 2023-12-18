@@ -17,16 +17,7 @@ class reviewAppBuilderBaseView(AppBuilderBaseView):
     default_view = "review"
     @expose("/", methods=['GET', 'POST'])
     def review(self):
-        '''
-        conn = psycopg2.connect(
-            dbname="your_db",
-            user="user",
-            password="psword",
-            host="host"
-        )
-        cursor = conn.cursor()
-        cursor.execute("SELECT * FROM test") #sql 인젝션 방지 위해서는 명시적으로 테이블 명을 쓰는게 좋음
-        '''
+       
         return self.render_template("env.html", content="DEV")
 
 
