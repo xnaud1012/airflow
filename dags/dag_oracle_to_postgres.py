@@ -27,6 +27,7 @@ with DAG(
         
         ora_cursor = ora_con.cursor()    
         ora_cursor.execute("SELECT * FROM test")
+ 
 
         for row in ora_cursor.fetchall():
             processed_row = []
