@@ -7,8 +7,9 @@ import psycopg2
 bp = Blueprint(
                "review_plugin",
                __name__,
-               static_folder='/opt/airflow/plugins/static',
-               template_folder="templates" # registers airflow/plugins/templates as a Jinja template folder
+               static_folder='static',
+               template_folder="templates", # registers airflow/plugins/templates as a Jinja template folder
+               static_url_path="/static/review_plugin"
                )
 
 class reviewAppBuilderBaseView(AppBuilderBaseView):
@@ -16,7 +17,7 @@ class reviewAppBuilderBaseView(AppBuilderBaseView):
     @expose("/", methods=['GET', 'POST'])
     def review(self):
        
-        return self.render_template("env.html", content="DEV")
+        return self.render_template("review_plugin/env.html", content="DEV")
 
 
 
