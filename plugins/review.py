@@ -7,7 +7,7 @@ import psycopg2
 bp = Blueprint(
                "review_plugin",
                __name__,
-               static_folder='static/DataTables',
+               static_folder='static',
                template_folder="templates" # registers airflow/plugins/templates as a Jinja template folder
                )
 
