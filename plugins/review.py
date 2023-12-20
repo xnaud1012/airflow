@@ -1,5 +1,7 @@
 from airflow.plugins_manager import AirflowPlugin
 from flask import Blueprint
+from airflow.www.auth import has_access
+from airflow.security import permissions
 from flask_appbuilder import expose, BaseView as AppBuilderBaseView
 import psycopg2
 
@@ -15,6 +17,11 @@ bp = Blueprint(
 class reviewAppBuilderBaseView(AppBuilderBaseView):
     default_view = "review"
     @expose("/", methods=['GET', 'POST'])
+    @has_access(
+        [
+            (permissions.ACTION_CAN_READ, permissions.RESOURCE_WEBSITE),
+        ]
+    )
     def review(self):
        
         return self.render_template("review_plugin/env.html", content="DEV")
