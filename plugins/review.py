@@ -3,6 +3,7 @@ from flask import Blueprint
 from airflow.www.auth import has_access
 from airflow.security import permissions
 from flask_appbuilder import expose, BaseView as AppBuilderBaseView
+from flask import jsonify
 from airflow.providers.postgres.hooks.postgres import PostgresHook
 import psycopg2
 import json
@@ -46,7 +47,7 @@ class reviewAppBuilderBaseView(AppBuilderBaseView):
         return self.render_template("env.html", content="DEV")
     
     
-    @expose("/getData",methods=['GET'])
+    @expose("/getData",methods=['GET','POST'])
     def getData(self):
         
         pg_hook = PostgresHook('conn-db-postgres-custom') 
@@ -67,11 +68,8 @@ class reviewAppBuilderBaseView(AppBuilderBaseView):
             for i, col_name in enumerate(column_names):
                 row_data[col_name] = row[i]
             result.append(row_data)              
-
-
-
-        return self.response(200, data=json.dumps(data), mimetype="application/json")
-    
+        new_result= {"data":result}
+        return jsonify(new_result)
 
 
     
