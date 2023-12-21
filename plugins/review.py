@@ -49,7 +49,7 @@ class reviewAppBuilderBaseView(AppBuilderBaseView):
     
     @expose("/getData",methods=['GET'])
     def getData(self):
-        
+        print('come in!!!!!')
         pg_hook = PostgresHook('conn-db-postgres-custom') 
         # 데이터베이스 연결 가져오기
         conn = pg_hook.get_conn()
