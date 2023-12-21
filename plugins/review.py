@@ -3,8 +3,10 @@ from flask import Blueprint
 from airflow.www.auth import has_access
 from airflow.security import permissions
 from flask_appbuilder import expose, BaseView as AppBuilderBaseView
+from airflow.providers.postgres.hooks.postgres import PostgresHook
 import psycopg2
-
+import json
+import re
 
 bp = Blueprint(
                "review_plugin",
@@ -17,6 +19,22 @@ bp = Blueprint(
 
 class reviewAppBuilderBaseView(AppBuilderBaseView):
     default_view = "review"
+
+    def extract_sql_query(self):
+        f = open("./sql/psql.sql", 'r')
+        sql_query = ''
+        while True:
+            line = f.readline()
+            if not line: break # 
+            a = str(line)
+            sql_query = sql_query + a
+        f.close()
+        cleaned_query = re.sub(r'[\t\s]+', ' ', sql_query)
+        cleaned_query = re.sub(r'[\t\s]*,[\t\s]*', ', ', cleaned_query)
+        cleaned_query = re.sub(r'[\t\s]*from[\t\s]*', ' FROM ', cleaned_query, flags=re.IGNORECASE)
+
+        return cleaned_query;
+    
     @expose("/")
     @has_access(
         [
@@ -26,6 +44,37 @@ class reviewAppBuilderBaseView(AppBuilderBaseView):
     def review(self):
        
         return self.render_template("env.html", content="DEV")
+    
+    
+    @expose("/getData",methods=['GET'])
+    def getData(self):
+        
+        pg_hook = PostgresHook('conn-db-postgres-custom') 
+        # 데이터베이스 연결 가져오기
+        conn = pg_hook.get_conn()
+        cursor = conn.cursor()
+
+        query = self.extract_sql_query();
+        print(query)
+        cursor.execute(query)
+        data = cursor.fetchall()
+        column_names = [desc[0] for desc in cursor.description]
+
+        result = []
+
+        for row in data:
+            row_data = {}
+            for i, col_name in enumerate(column_names):
+                row_data[col_name] = row[i]
+            result.append(row_data)              
+
+
+
+        return self.response(200, data=json.dumps(data), mimetype="application/json")
+    
+
+
+    
 
 
 
@@ -36,6 +85,11 @@ v_appbuilder_package = {
     "view": v_appbuilder_view
 }
 
+
+
+
+    
+
 class AirflowTestPlugin(AirflowPlugin):
     name = "review_plugin"
     operators = []
@@ -44,3 +98,5 @@ class AirflowTestPlugin(AirflowPlugin):
     executors = []
     admin_views = []
     appbuilder_views = [v_appbuilder_package]
+
+
