@@ -43,12 +43,12 @@ class reviewAppBuilderBaseView(AppBuilderBaseView):
         ]
     )
     def review(self):
-        print('asdfasdfsdf************************')
+       
        
         return self.render_template("env.html", content="DEV")
     
     
-    @expose("/getData",methods=['GET'])
+    @expose("/getData",methods=['POST'])
     def getData(self):
         print('come in!!!!!')
         pg_hook = PostgresHook('conn-db-postgres-custom') 
