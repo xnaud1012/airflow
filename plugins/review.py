@@ -43,6 +43,7 @@ class reviewAppBuilderBaseView(AppBuilderBaseView):
         ]
     )
     def review(self):
+        print('asdfasdfsdf************************')
        
         return self.render_template("env.html", content="DEV")
     
