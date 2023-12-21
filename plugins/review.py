@@ -49,6 +49,11 @@ class reviewAppBuilderBaseView(AppBuilderBaseView):
     
     
     @expose("/getData",methods=['POST'])
+    @has_access(
+        [
+            (permissions.ACTION_CAN_READ, permissions.RESOURCE_WEBSITE),
+        ]
+    )
     def getData(self):
         print('come in!!!!!')
         pg_hook = PostgresHook('conn-db-postgres-custom') 
