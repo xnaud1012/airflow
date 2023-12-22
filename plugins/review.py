@@ -27,7 +27,8 @@ class reviewAppBuilderBaseView(AppBuilderBaseView):
         current_directory = os.getcwd()
         print("현재 작업 디렉토리:", current_directory)
         sql_query = ''
-        with open("./static/sql/psql.sql", 'r') as f:
+        with open("../airflow/plugins/static/sql/psql.sql", 'r') as f:    # 파일 읽기 및 처리
+
             for line in f:
                 sql_query +=line;     
         cleaned_query = re.sub(r'[\t\s]+', ' ', sql_query)
