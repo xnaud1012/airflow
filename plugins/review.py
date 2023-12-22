@@ -6,6 +6,7 @@ from flask_appbuilder import expose, BaseView as AppBuilderBaseView
 from flask import jsonify
 from airflow.providers.postgres.hooks.postgres import PostgresHook
 import psycopg2
+import os
 import json
 import re
 
@@ -23,7 +24,8 @@ class reviewAppBuilderBaseView(AppBuilderBaseView):
 
     def extract_sql_query(self):
 
-      
+        current_directory = os.getcwd()
+        print("현재 작업 디렉토리:", current_directory)
         sql_query = ''
         with open("./static/sql/psql.sql", 'r') as f:
             for line in f:
