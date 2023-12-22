@@ -23,7 +23,7 @@ class reviewAppBuilderBaseView(AppBuilderBaseView):
 
     def extract_sql_query(self):
       
-        f = open("./sql/psql.sql", 'r')
+        f = open("/sql/psql.sql", 'r')
         sql_query = ''
         while True:
             line = f.readline()
