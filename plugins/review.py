@@ -75,6 +75,7 @@ class reviewAppBuilderBaseView(AppBuilderBaseView):
 
 
 
+
 v_appbuilder_view = reviewAppBuilderBaseView()
 v_appbuilder_package = {
     "name": "Review", # this is the name of the link displayed
