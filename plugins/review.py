@@ -25,13 +25,9 @@ class reviewAppBuilderBaseView(AppBuilderBaseView):
 
       
         sql_query = ''
-        with open("/psql.sql", 'r') as f:
-            print('????????????????????????????????????????????????????????????????????')
-            while True:
-                line = f.readline()
-                if not line: break # 
-                a = str(line)
-                sql_query = sql_query + a       
+        with open("./static/sql/psql.sql", 'r') as f:
+            for line in f:
+                sql_query +=line;     
         cleaned_query = re.sub(r'[\t\s]+', ' ', sql_query)
         cleaned_query = re.sub(r'[\t\s]*,[\t\s]*', ', ', cleaned_query)
         cleaned_query = re.sub(r'[\t\s]*from[\t\s]*', ' FROM ', cleaned_query, flags=re.IGNORECASE)
