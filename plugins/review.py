@@ -80,8 +80,8 @@ class reviewAppBuilderBaseView(AppBuilderBaseView):
 
 v_appbuilder_view = reviewAppBuilderBaseView()
 v_appbuilder_package = {
-    "name": "Review", # this is the name of the link displayed
-    "category": "Custom", # 내가 생성하고자 하는 탭 이름.
+    "name": "review", # this is the name of the link displayed
+    "category": "custom", # 내가 생성하고자 하는 탭 이름.
     "view": v_appbuilder_view
 }
    
