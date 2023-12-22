@@ -17,6 +17,7 @@ bp = Blueprint(
                static_url_path="/static/review_plugin"             
                )
 
+
 class reviewAppBuilderBaseView(AppBuilderBaseView):
     default_view = "review"
 
@@ -86,7 +87,7 @@ v_appbuilder_package = {
 }
    
 
-class AirflowTestPlugin(AirflowPlugin):
+class AirflowReviewPlugin(AirflowPlugin):
     name = "review_plugin"
     operators = []
     flask_blueprints = [bp]
