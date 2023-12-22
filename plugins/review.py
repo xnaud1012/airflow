@@ -76,7 +76,8 @@ class reviewAppBuilderBaseView(AppBuilderBaseView):
                 row_data[col_name] = row[i]
             result.append(row_data)              
         new_result= {"data":result}
-        return jsonify(new_result)
+  
+        return new_result
 
 
 
