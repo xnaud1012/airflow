@@ -42,13 +42,12 @@ class reviewAppBuilderBaseView(AppBuilderBaseView):
             (permissions.ACTION_CAN_READ, permissions.RESOURCE_WEBSITE),
         ]
     )
-    def review(self):
-       
+    def review(self):      
        
         return self.render_template("env.html", content="DEV")
     
     
-    @bp.route('/getData', methods=['GET','POST'])
+    @expose('/getData', methods=['GET','POST'])
     def getData(self):
         print('come in!!!!!')
         pg_hook = PostgresHook('conn-db-postgres-custom') 
@@ -86,8 +85,6 @@ v_appbuilder_package = {
 
 
 
-
-    
 
 class AirflowTestPlugin(AirflowPlugin):
     name = "review_plugin"
