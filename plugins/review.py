@@ -70,9 +70,9 @@ class reviewAppBuilderBaseView(AppBuilderBaseView):
             for i, col_name in enumerate(column_names):
                 row_data[col_name] = row[i]
             result.append(row_data)              
-        new_result= {"result_data":result}
+        #new_result= {"result_data":result}
   
-        return jsonify(new_result)
+        return jsonify(result)
 
 
 
