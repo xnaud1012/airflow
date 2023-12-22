@@ -59,15 +59,10 @@ class reviewAppBuilderBaseView(AppBuilderBaseView):
         cursor = conn.cursor()
 
         query = self.extract_sql_query();
-        print(query)
-        cursor.execute(query)
-
-        print('********************************')
-        data = cursor.fetchall()
+        cursor.execute(query);
+        data = cursor.fetchall();
 
         column_names = [desc[0] for desc in cursor.description]
-        print('********************************')
-
         result = []
 
         for row in data:
