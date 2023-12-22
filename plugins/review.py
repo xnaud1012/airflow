@@ -22,9 +22,7 @@ class reviewAppBuilderBaseView(AppBuilderBaseView):
     default_view = "review"
 
     def extract_sql_query(self):
-       cleaned_query='temp'
-       return cleaned_query;
-       """
+      
         f = open("./sql/psql.sql", 'r')
         sql_query = ''
         while True:
@@ -36,9 +34,9 @@ class reviewAppBuilderBaseView(AppBuilderBaseView):
         cleaned_query = re.sub(r'[\t\s]+', ' ', sql_query)
         cleaned_query = re.sub(r'[\t\s]*,[\t\s]*', ', ', cleaned_query)
         cleaned_query = re.sub(r'[\t\s]*from[\t\s]*', ' FROM ', cleaned_query, flags=re.IGNORECASE)
-        """
+
         
-        
+        return cleaned_query;
     
     @expose("/")
     @has_access(
@@ -63,8 +61,12 @@ class reviewAppBuilderBaseView(AppBuilderBaseView):
         query = self.extract_sql_query();
         print(query)
         cursor.execute(query)
+
+        print('********************************')
         data = cursor.fetchall()
+
         column_names = [desc[0] for desc in cursor.description]
+        print('********************************')
 
         result = []
 
