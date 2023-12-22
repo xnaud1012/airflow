@@ -74,9 +74,6 @@ class reviewAppBuilderBaseView(AppBuilderBaseView):
         return jsonify(new_result)
 
 
-    
-
-
 
 v_appbuilder_view = reviewAppBuilderBaseView()
 v_appbuilder_package = {
@@ -84,11 +81,7 @@ v_appbuilder_package = {
     "category": "Custom", # 내가 생성하고자 하는 탭 이름.
     "view": v_appbuilder_view
 }
-
-
-
-
-    
+   
 
 class AirflowTestPlugin(AirflowPlugin):
     name = "review_plugin"
