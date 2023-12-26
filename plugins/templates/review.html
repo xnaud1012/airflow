@@ -185,6 +185,7 @@
                 el: document.getElementById('grid'),
                 scrollX: true,
                 scrollY: true,
+                editable: true, // 전체 그리드에 대한 편집 가능 설정
                 draggable: false,
                 header: { height: 30 },
                 bodyHeight: 200,
@@ -201,6 +202,7 @@
                             name: 'test_id',
                             align: "center",
                             width: 150,
+                            editor:'text',
                             whiteSpace: 'normal',
                             formatter: function (e) {
                                 return e.value
