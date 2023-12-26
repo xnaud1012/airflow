@@ -126,6 +126,8 @@
                 return response.json();
             })
             .then(data => {
+
+                console.log(data)
                 // 'data' contains the JSON data obtained from the server
                 createdGrid.resetData(data);
             })
