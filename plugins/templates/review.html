@@ -68,6 +68,7 @@
 
     <script>    
       $(document).ready(function() {
+        var csrf_token = "{{ csrf_token }}";
         const createdGrid = initGrid();
         ajaxData(createdGrid);     
         console.log("sdfsdfsldkj")
@@ -279,6 +280,9 @@
                     method: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify(modifiedData),
+                    beforeSend: function(xhr) {
+                        xhr.setRequestHeader('X-CSRFToken', csrf_token); // CSRF 토큰 설정
+                    },
                     success: function(response) {
                         console.log('저장 성공:', response);
                     },

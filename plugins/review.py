@@ -10,6 +10,7 @@ import logging
 import os
 from datetime import datetime
 import re
+from flask_wtf.csrf import generate_csrf
 
 bp = Blueprint(
                "review_plugin",
@@ -63,8 +64,7 @@ class reviewAppBuilderBaseView(AppBuilderBaseView):
         ]
     )
     def review(self):
-       
-       
+        csrf_token = generate_csrf()       
         return self.render_template("review.html", content="DEV")
     
     
