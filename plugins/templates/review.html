@@ -210,6 +210,7 @@
                             name: 'test_a',
                             align: "left",
                             width: 100,
+                            editor: 'text',
                             whiteSpace: 'normal',
                             formatter: function (e) { 
                                 return e.value
@@ -236,10 +237,7 @@
                             },
                         },
                     ],
-                columnOptions: {
-                        editable: true, // 모든 열을 편집 가능하게 설정
-                        editor: 'text' // 편집 시 텍스트 입력 편집기 사용
-                    }
+               
                 });
 
                 return sampleGrid;
