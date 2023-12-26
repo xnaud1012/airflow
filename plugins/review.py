@@ -99,7 +99,7 @@ class reviewAppBuilderBaseView(AppBuilderBaseView):
 
         
 
-        """
+        
         try:
             client_data = request.json
             print(client_data)
@@ -124,7 +124,8 @@ class reviewAppBuilderBaseView(AppBuilderBaseView):
         # 데이터베이스 연결과 커서는 사용 후에 반드시 닫아야 합니다
             cursor.close()
             conn.close()
-        """
+          
+        
 
 
 
