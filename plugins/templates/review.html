@@ -24,8 +24,10 @@
     </div>
 
 
-    <script>            
-    const initGrid = () => {
+    <script>    
+      $(document).ready(function() {
+
+        const initGrid = () => {
               // 그리드 객체
                 const Grid = tui.Grid;
 
@@ -127,7 +129,10 @@
 
                 return sampleGrid;
             }
-    const ajaxData = () => {
+
+        const ajaxData = () => {
+        const createdGrid = initGrid(); // initGrid 내부에서 createdGrid 정의 및 초기화
+
         fetch('./getData')
             .then(response => {
                 if (!response.ok) {
@@ -136,46 +141,17 @@
                 return response.json();
             })
             .then(data => {
-                return data
-           
+                createdGrid.resetData(data);
             })
             .catch(error => {
                 console.error('There was a problem with the fetch operation:', error);
             });
     };
-    window.onload = () => {
-        // 그리드 설정
-        const createdGrid = initGrid();
-        result_data = ajaxData();
 
-        console.log(result_data)
-
-        // 샘플 데이터
-        /*const sampleData = [
-            {
-                date: '2022-12-04',
-                name: '석봉박1',
-                location: '부천',
-            },
-            {
-                date: '2022-12-07',
-                name: '석봉박2',
-                location: '마곡',
-            },
-            {
-                date: '2022-12-12',
-                name: '석봉박3',
-                location: '충주',
-            }
-        ];
-
-        // 그리드에 데이터 넣기(출력)*/
-        createdGrid.resetData(result_data);
-       // ajaxData();
-    }
-
-          
-    </script>
+    // 그리드 설정과 데이터 가져오기
+        ajaxData();
+});
+</script>
 
 
 </body>
