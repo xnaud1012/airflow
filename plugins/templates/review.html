@@ -83,8 +83,8 @@
                     contextMenu: null,
                     columns: [
                         {
-                            header: '날짜',
-                            name: 'date',
+                            header: '테스트아이디',
+                            name: 'test_id',
                             align: "center",
                             width: 150,
                             whiteSpace: 'normal',
@@ -93,8 +93,8 @@
                             },
                         },
                         {
-                            header: '이름',
-                            name: 'name',
+                            header: 'A항목',
+                            name: 'test_a',
                             align: "left",
                             width: 100,
                             whiteSpace: 'normal',
@@ -103,8 +103,18 @@
                             },
                         },
                         {
-                            header: '위치',
-                            name: 'location',
+                            header: 'B항목',
+                            name: 'test_b',
+                            align: "left",
+                            width: 150,
+                            whiteSpace: 'normal',
+                            formatter: function (e) {
+                                return e.value
+                            },
+                        },
+                        {
+                            header: 'C항목',
+                            name: 'test_c',
                             align: "left",
                             width: 150,
                             whiteSpace: 'normal',
