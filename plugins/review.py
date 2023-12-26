@@ -97,6 +97,7 @@ class reviewAppBuilderBaseView(AppBuilderBaseView):
 
         try:
             client_data = request.json
+            print(client_data)
             pg_hook = PostgresHook('conn-db-postgres-custom') 
             # 데이터베이스 연결 가져오기
             conn = pg_hook.get_conn()
