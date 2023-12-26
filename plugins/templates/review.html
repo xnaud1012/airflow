@@ -258,9 +258,10 @@
         }
 
         createdGrid.on('beforeChange', function(event) {
-            const { rowKey, columnName, value } = event;
 
             console.log(event)
+            const { rowKey, columnName, value } = event;
+            
 
             // 변경된 데이터를 업데이트
             const newData = createdGrid.getFormattedRawData();
@@ -269,7 +270,10 @@
                 newData[rowIndex][columnName] = value;
             }
 
-            createdGrid.resetData(newData);  
+            createdGrid.resetData(newData); 
+            
+            
+
             });
         
 
