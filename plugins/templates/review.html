@@ -59,6 +59,7 @@
 
     <!-- 테이블 생성 -->
     <div class="container">
+        <button id ="saveButton">Save</button>
         <table id="grid" class="display" style="width:100%">
           
         </table>
@@ -210,7 +211,7 @@
                             name: 'test_a',
                             align: "left",
                             width: 100,
-                            editor: 'text',
+                            
                             whiteSpace: 'normal',
                             formatter: function (e) { 
                                 return e.value
@@ -259,29 +260,37 @@
                 });
         }
 
-        createdGrid.on('beforeChange', function(event) {
+        $('#saveButton').on('click', function() {
+                saveChanges();
+        });
 
-            console.log(event)
-            const { rowKey, columnName, value } = event;
+
+        function saveChanges() {
+                const modifiedData = createdGrid.getModifiedRows();
+                console.log('저장할 데이터:', modifiedData);
+
+                // AJAX 요청으로 서버에 데이터 저장
+               /* $.ajax({
+                    url: './saveData', // 서버의 데이터 저장 URL
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(modifiedData),
+                    success: function(response) {
+                        console.log('저장 성공:', response);
+                    },
+                    error: function(error) {
+                        console.error('저장 실패:', error);
+                    }
+                });*/
+
             
 
-            // 변경된 데이터를 업데이트
-            const newData = createdGrid.getFormattedRawData();
-            const rowIndex = newData.findIndex(item => item.test_id === rowKey);
-            if (rowIndex >= 0) {
-                newData[rowIndex][columnName] = value;
             }
 
-            createdGrid.resetData(newData); 
-            
-            
-
-            });
-        
-
+       
 
         
-        });
+    });
 
 
 
