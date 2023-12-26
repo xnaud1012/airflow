@@ -47,7 +47,7 @@ class reviewAppBuilderBaseView(AppBuilderBaseView):
     def review(self):
        
        
-        return self.render_template("env.html", content="DEV")
+        return self.render_template("review.html", content="DEV")
     
     
     @expose('/getData', methods=['GET', 'POST'])
@@ -80,7 +80,7 @@ class reviewAppBuilderBaseView(AppBuilderBaseView):
 v_appbuilder_view = reviewAppBuilderBaseView()
 v_appbuilder_package = {
     "name": "review", # this is the name of the link displayed
-    "category": "custom", # 내가 생성하고자 하는 탭 이름.
+    "category": "review", # 내가 생성하고자 하는 탭 이름.
     "view": v_appbuilder_view
 }
    
