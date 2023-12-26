@@ -273,13 +273,21 @@
         function saveChanges() {
                 const modifiedData = createdGrid.getModifiedRows();
                 console.log('저장할 데이터:', modifiedData);
+                updates=modifiedData.updateRows
 
-                // AJAX 요청으로 서버에 데이터 저장
-                $.ajax({
+                for (var i=0;updates.length;i++){
+                    console.log(updates[i])
+                    updateData(updates[i])
+                }            
+
+            }
+
+        function updateData(rows){
+            $.ajax({
                     url: './updateData', // 서버의 데이터 저장 URL
                     method: 'POST',
                     contentType: 'application/json',
-                    data: JSON.stringify(modifiedData),
+                    data: JSON.stringify(rows),
                     beforeSend: function(xhr) {
                         xhr.setRequestHeader('X-CSRFToken', csrf_token); // CSRF 토큰 설정
                     },
@@ -290,10 +298,7 @@
                         console.error('저장 실패:', error);
                     }
                 });
-
-            
-
-            }
+        }
 
        
 
