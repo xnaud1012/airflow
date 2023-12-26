@@ -24,11 +24,8 @@
     </div>
 
 
-    <script>
-
-
-            console.log('in')
-            const initGrid = () => {
+    <script>            
+    const initGrid = () => {
               // 그리드 객체
                 const Grid = tui.Grid;
 
@@ -120,33 +117,49 @@
 
                 return sampleGrid;
             }
+    const ajaxData = () => {
+        fetch('./getData')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // 'data' contains the JSON data obtained from the server
+                createdGrid.resetData(data);
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+            });
+    };
+    window.onload = () => {
+        // 그리드 설정
+        const createdGrid = initGrid();
 
-            window.onload = () => {
-                // 그리드 설정
-                const createdGrid = initGrid();
-
-                // 샘플 데이터
-                const sampleData = [
-                    {
-                        date: '2022-12-04',
-                        name: '석봉박1',
-                        location: '부천',
-                    },
-                    {
-                        date: '2022-12-07',
-                        name: '석봉박2',
-                        location: '마곡',
-                    },
-                    {
-                        date: '2022-12-12',
-                        name: '석봉박3',
-                        location: '충주',
-                    }
-                ];
-
-                // 그리드에 데이터 넣기(출력)
-                createdGrid.resetData(sampleData);
+        // 샘플 데이터
+        /*const sampleData = [
+            {
+                date: '2022-12-04',
+                name: '석봉박1',
+                location: '부천',
+            },
+            {
+                date: '2022-12-07',
+                name: '석봉박2',
+                location: '마곡',
+            },
+            {
+                date: '2022-12-12',
+                name: '석봉박3',
+                location: '충주',
             }
+        ];
+
+        // 그리드에 데이터 넣기(출력)
+        createdGrid.resetData(sampleData);*/
+        ajaxData();
+    }
 
           
     </script>
