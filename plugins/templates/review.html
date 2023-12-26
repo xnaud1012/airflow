@@ -11,7 +11,48 @@
 
 </head>
 <style>
+/* TOAST Grid */
+.tui-grid-layer-state {
+    /* outline border */
+    border-left: 1px solid rgb(205, 205, 205) !important;
+}
 
+/* SELECTED ROW */
+.tui-grid-cell.cell-selection {
+    background-color: rgba(116, 185, 255, .1) !important;
+}
+
+/* HOVER ROW */
+.tui-grid-row-hover>.tui-grid-cell {
+    background-color: rgba(116, 185, 255, .1) !important;
+}
+
+/* DRAG ROW DELETE */
+.tui-grid-layer-selection {
+    display: none;
+}
+
+.tui-grid-scrollbar-left-bottom {
+    border-width: 0 0;
+    border-left-width: 1px;
+}
+
+.tui-grid-cell-has-input .tui-grid-cell-content {
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+.tui-grid-row-header-checkbox {
+    padding: 0;
+}
+
+.tui-grid-layer-focus-deactive {
+    display: none !important;
+}
+
+.tui-grid-layer-focus-border {
+    display: none !important;
+}
 
 </style>
 <body>
@@ -26,56 +67,150 @@
 
     <script>    
       $(document).ready(function() {
+        const createdGrid = initGrid();
+        ajaxData(createdGrid);
+        
 
-        const initGrid = () => {
-              // 그리드 객체
-                const Grid = tui.Grid;
+        function initGrid() {
+    // 그리드 객체
+            const Grid = tui.Grid;
 
-                /**
-                 * Grid 테마 커스텀
-                 * Grid.applyTheme('striped', {...}) : 
-                 * default : 프리셋 (기본)
-                 * striped : 프리셋 (줄무늬)
-                 *  clean : 프리셋 (클린)
-                 *      - preset theme name. Available values are 'default', 'striped' and 'clean'.
-                 *      - https://nhn.github.io/tui.grid/latest/Grid#applyTheme
-                 */
-                Grid.applyTheme('striped',  {
-                    cell: {
-                        normal: {
-                            border: 'black'
-                        },
-                        header: {
-                            background: 'gray',
-                            text: 'white'
-                        },
-                        evenRow: {
-                            background: '#fee'
-                        }
+            /**
+             * Grid 테마 커스텀
+             * Grid.applyTheme('striped', {...}) : 
+             * default : 프리셋 (기본)
+             * striped : 프리셋 (줄무늬)
+             *  clean : 프리셋 (클린)
+             *      - preset theme name. Available values are 'default', 'striped' and 'clean'.
+             *      - https://nhn.github.io/tui.grid/latest/Grid#applyTheme
+             */
+            Grid.applyTheme('striped',  {
+                cell: {
+                    normal: {
+                        border: 'black'
+                    },
+                    header: {
+                        background: 'gray',
+                        text: 'white'
+                    },
+                    evenRow: {
+                        background: '#fee'
                     }
-                });
+                }
+            });
 
-                /**
-                 * 그리드 설정
-                 * {Dom} el : 그리드 element(DOM)
-                 *  {boolean} scrollX : X 스크롤 사용여부
-                 *  {boolean} scrollY : Y 스크롤 사용여부
-                 *  {boolean} draggable : 드레그 사용 여부
-                 * {Object} header
-                 *       {Number} height : 헤더 높이
-                 *  {Number} bodyHeight : 그리드 바디 높이
-                 *  {*} contextMenu : 마우스 우클릭 옵션
-                 *  {Array} columns :
-                 *      -  {String} header : 컬럼명(헤더)
-                 *      -  {String} name : 컬럼 name (input data와 이름이 일치해야함)
-                 *      -  {String} align : 정렬
-                 *      -  {Number} width : 너비
-                 *      -  {String} whiteSpace : 줄바꿈 설정
-                 *      -  {Function} formatter : 출력 포멧
-                 * 기타 옵션은 공식 document를 참조하자.
-                 */
-                
-                const sampleGrid = new Grid({
+            /**
+             * 그리드 설정
+             * {Dom} el : 그리드 element(DOM)
+             *  {boolean} scrollX : X 스크롤 사용여부
+             *  {boolean} scrollY : Y 스크롤 사용여부
+             *  {boolean} draggable : 드레그 사용 여부
+             * {Object} header
+             *       {Number} height : 헤더 높이
+             *  {Number} bodyHeight : 그리드 바디 높이
+             *  {*} contextMenu : 마우스 우클릭 옵션
+             *  {Array} columns :
+             *      -  {String} header : 컬럼명(헤더)
+             *      -  {String} name : 컬럼 name (input data와 이름이 일치해야함)
+             *      -  {String} align : 정렬
+             *      -  {Number} width : 너비
+             *      -  {String} whiteSpace : 줄바꿈 설정
+             *      -  {Function} formatter : 출력 포멧
+             * 기타 옵션은 공식 document를 참조하자.
+             */
+
+            const sampleGrid = new Grid({
+                language: {
+                    localeCode: "ko",                           // localeCode : 언어 설정 (en, ko)
+                    data: {
+                        display: { 
+                            noData: "검색 결과가 없습니다.",      // noData : 빈 값일 때 표시하는 형식
+                        },
+                    }
+                },
+                theme: {
+                    presetName: "clean",                        // presetName : 기본 테마 설정 (default, striped, clean)
+                    extOptions: {                               // <<커스텀 옵션설정>>
+                        outline: {                              // [ outline ] : 그리드 바깥 선 설정
+                            border: '#bbbbbb',                  //  border : 색깔
+                            showVerticalBorder: true,           //  showVerticalBorder : 바깥 세로 선 여부(boolean)
+                        },
+                        selection: {                            // [ selection ] : 행, 열의 헤더를 선택하면 해당 부분이 선택되며 나오는 색상 설정
+                        //   background: '#f5d1ba',              //  background : 바탕색
+                        background : '#1eed11',
+                            border: '#bbbbbb',                  //  border : 선 색
+                        },
+                        scrollbar: {                            // [ scrollbar ] : 스크롤바
+                            border: 'rgb(205,205,205)',         //  border : 선 색
+                            background: 'rgb(248,248,248)',     //  background : 바탕 색
+                            emptySpace: 'rgb(240,240,240)',     //  emptySpace : 스크롤 빈 부분 색상
+                            thumb: 'rgb(205,205,205)',          //  thumb : 스크롤 부분 색상
+                            active: 'rgb(70,70,70)'             //  active : 마우스오버, 클릭할 때 색깔
+                        },
+                        frozenBorder: {                         // [ frozenBorder ] : 고정 컬럼 
+                            border: 'rgb(233,233,233)',         //  border : 선 색 
+                        },
+                        area: {                                 // [area] : 검색 후 표시된 열을 제외한 부분 ( 표의 높이 - 열의 높이 = area )
+                            header: {                           
+                                background: 'rgb(233, 233, 233)', //  header : 컬럼이 없는 헤더의 색상을 나타낸다.
+                                border: '#bbbbbb',                //  **border : [ cell ] - header 와 맞추는 것이 좋다. 현재는 오버되어 색상이 표기된다.
+                            },
+                            body: {                             //  body : 빈 열 값의 부분 색상
+                                background: '#ffffff',              
+                            },
+                        },
+                        row: {                                  // [ row ] : 열
+                            hover: {                            // hover : 마우스 오버시
+                                background: '#e9f8e8',
+                            },
+                            dummy: {                            // dummy : 비활성 시
+                                background: '#f5d1ba',
+                            },
+                        },
+                        cell: {                             // [ cell ] : 각 셀의 색상 지정
+                            normal: {
+                                border: '#bbbbbb',
+                                text: 'black',
+                                showVerticalBorder: true,
+                                showHorizontalBorder: true,
+                            },
+                            header: {                       //  header : 상단 제목 열
+                                background: 'rgb(233, 233, 233)',
+                                border: '#bbbbbb',
+                                text: 'black',
+                                showVerticalBorder: true,
+                                showHorizontalBorder: true,
+                            },
+                            selectedHeader: {               //  selectedHeader : 선택한 제목 색상
+                                background: 'rgb(233, 233, 233)',
+                            },
+                            rowHeader: {                    //  rowHeader : 좌측 제목 행
+                                background: 'rgb(233, 233, 233)',
+                                border: '#bbbbbb',
+                                text: 'black',
+                                showVerticalBorder: true,
+                                showHorizontalBorder: true,
+                            },
+                            selectedRowHeader: {            //  selectedRowHeader : 선택한 열 색상
+                                background: 'rgb(233, 233, 233)',
+                            },
+                            focused: {                      //  focused : 선택한 셀 색상 
+                                background: "#f5d1ba",
+                                border: "#bbbbbb",
+                            },
+                            focusedInactive: {              //  focusedInactive : 선택 후 표 바깥을 선택하면 나타나는 색상
+                                border: "#bbbbbb"
+                            },
+                            summary: {                      //  summary : 요약 열에 사용할 색상
+                                    background: '#f1f5ff',
+                                    border: '#bbbbbb',
+                                    text: 'black',
+                                    showVerticalBorder: true,
+                                    showHorizontalBorder: true,
+                                },
+                            },
+                        },
+                    },
                     el: document.getElementById('grid'),
                     scrollX: true,
                     scrollY: true,
@@ -83,6 +218,12 @@
                     header: { height: 30 },
                     bodyHeight: 200,
                     contextMenu: null,
+                    columnOptions: {                        // [ columnOptions ]
+                        minWidth: 50,                       //  minWidth : 최소 너비 사이즈
+                        resizable: true,                    //  resizable : 컬럼의 고정 폭을 조정 여부(boolean).
+                        frozenCount: 0,                     //  frozenCount : 고정 컬럼의 개수
+                        frozenBorderWidth: 1,               //  frozenBorderWidth : 고정 컬럼의 경계선 너비(px)
+                    },
                     columns: [
                         {
                             header: '테스트아이디',
@@ -130,27 +271,46 @@
                 return sampleGrid;
             }
 
-        const ajaxData = () => {
-        const createdGrid = initGrid(); // initGrid 내부에서 createdGrid 정의 및 초기화
+     
 
-        fetch('./getData')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                createdGrid.resetData(data);
-            })
-            .catch(error => {
-                console.error('There was a problem with the fetch operation:', error);
-            });
-    };
+        function ajaxData(createdGrid) {
+            fetch('./getData')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    createdGrid.resetData(data);
+                })
+                .catch(error => {
+                    console.error('There was a problem with the fetch operation:', error);
+                });
+        }
+        function upgradeData(createdGrid) {
 
+          createdGrid.on('beforeChange', function(event) {
+          const { rowKey, columnName, value } = event;
+
+          // 변경된 데이터를 업데이트
+          const newData = createdGrid.getFormattedRawData();
+
+          console.log(newData)
+          const rowIndex = newData.findIndex(item => item.test_id === rowKey);
+          if (rowIndex >= 0) {
+            newData[rowIndex][columnName] = value;
+          }
+
+          createdGrid.resetData(newData);  
+        
+        });
+
+
+        
     // 그리드 설정과 데이터 가져오기
-        ajaxData();
-});
+        
+
 </script>
 
 
