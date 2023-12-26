@@ -4,10 +4,11 @@ from airflow.www.auth import has_access
 from airflow.security import permissions
 from flask_appbuilder import expose, BaseView as AppBuilderBaseView
 from flask import jsonify
+from flask import request, jsonify
 from airflow.providers.postgres.hooks.postgres import PostgresHook
-import psycopg2
+import logging
 import os
-import json
+from datetime import datetime
 import re
 
 bp = Blueprint(
@@ -22,18 +23,35 @@ bp = Blueprint(
 class reviewAppBuilderBaseView(AppBuilderBaseView):
     default_view = "review"
 
-    def extract_sql_query(self):
+    def extract_select_sql_query(self):
 
         current_directory = os.getcwd()
         print("현재 작업 디렉토리:", current_directory)
         sql_query = ''
-        with open("../airflow/plugins/static/sql/psql.sql", 'r') as f:    # 파일 읽기 및 처리
+        with open("../airflow/plugins/static/sql/select.sql", 'r') as f:    # 파일 읽기 및 처리
 
             for line in f:
                 sql_query +=line;     
         cleaned_query = re.sub(r'[\t\s]+', ' ', sql_query)
         cleaned_query = re.sub(r'[\t\s]*,[\t\s]*', ', ', cleaned_query)
         cleaned_query = re.sub(r'[\t\s]*from[\t\s]*', ' FROM ', cleaned_query, flags=re.IGNORECASE)
+        cleaned_query = re.sub(r'[\t\s]*where[\t\s]*', ' WHERE ', cleaned_query, flags=re.IGNORECASE)
+
+        
+        return cleaned_query;
+
+    def extract_update_sql_query(self):
+
+        current_directory = os.getcwd()
+        sql_query = ''
+        with open("../airflow/plugins/static/sql/update.sql", 'r') as f:    # 파일 읽기 및 처리
+
+            for line in f:
+                sql_query +=line;     
+        cleaned_query = re.sub(r'[\t\s]+', ' ', sql_query)
+        cleaned_query = re.sub(r'[\t\s]*,[\t\s]*', ', ', cleaned_query)
+        cleaned_query = re.sub(r'[\t\s]*set[\t\s]*', ' SET ', cleaned_query, flags=re.IGNORECASE)
+        cleaned_query = re.sub(r'[\t\s]*where[\t\s]*', ' WHERE ', cleaned_query, flags=re.IGNORECASE)
 
         
         return cleaned_query;
@@ -58,7 +76,7 @@ class reviewAppBuilderBaseView(AppBuilderBaseView):
         conn = pg_hook.get_conn()
         cursor = conn.cursor()
 
-        query = self.extract_sql_query();
+        query = self.extract_select_sql_query();
         cursor.execute(query);
         data = cursor.fetchall();
 
@@ -73,7 +91,33 @@ class reviewAppBuilderBaseView(AppBuilderBaseView):
         #new_result= {"result_data":result}
   
         return jsonify(result)
+    
+    @expose('/updateData', methods=['POST'])
+    def updateData(self):
 
+        try:
+            client_data = request.json
+            pg_hook = PostgresHook('conn-db-postgres-custom') 
+            # 데이터베이스 연결 가져오기
+            conn = pg_hook.get_conn()
+            cursor = conn.cursor()
+
+            current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            client_data['test_c'] = current_time
+
+            query = self.extract_update_sql_query();      
+            cursor.execute(query, client_data)
+            data = cursor.fetchall();
+            conn.commit()
+            return jsonify({"success": 1})
+        except Exception as e:
+            logging.error(f"Update failed: {e}")
+            return jsonify({"error": str(e)}), 500
+        
+        finally:
+        # 데이터베이스 연결과 커서는 사용 후에 반드시 닫아야 합니다
+            cursor.close()
+            conn.close()
 
 
 
