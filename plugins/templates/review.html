@@ -260,6 +260,8 @@
         createdGrid.on('beforeChange', function(event) {
             const { rowKey, columnName, value } = event;
 
+            console.log(event)
+
             // 변경된 데이터를 업데이트
             const newData = createdGrid.getFormattedRawData();
             const rowIndex = newData.findIndex(item => item.test_id === rowKey);
