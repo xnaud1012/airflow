@@ -69,23 +69,11 @@
       $(document).ready(function() {
         const createdGrid = initGrid();
         ajaxData(createdGrid);
-
-        console.log('????????')
         
 
         function initGrid() {
     // 그리드 객체
-            const Grid = tui.Grid;
-
-            /**
-             * Grid 테마 커스텀
-             * Grid.applyTheme('striped', {...}) : 
-             * default : 프리셋 (기본)
-             * striped : 프리셋 (줄무늬)
-             *  clean : 프리셋 (클린)
-             *      - preset theme name. Available values are 'default', 'striped' and 'clean'.
-             *      - https://nhn.github.io/tui.grid/latest/Grid#applyTheme
-             */
+            const Grid = tui.Grid;         
             Grid.applyTheme('striped',  {
                 cell: {
                     normal: {
@@ -99,27 +87,7 @@
                         background: '#fee'
                     }
                 }
-            });
-
-            /**
-             * 그리드 설정
-             * {Dom} el : 그리드 element(DOM)
-             *  {boolean} scrollX : X 스크롤 사용여부
-             *  {boolean} scrollY : Y 스크롤 사용여부
-             *  {boolean} draggable : 드레그 사용 여부
-             * {Object} header
-             *       {Number} height : 헤더 높이
-             *  {Number} bodyHeight : 그리드 바디 높이
-             *  {*} contextMenu : 마우스 우클릭 옵션
-             *  {Array} columns :
-             *      -  {String} header : 컬럼명(헤더)
-             *      -  {String} name : 컬럼 name (input data와 이름이 일치해야함)
-             *      -  {String} align : 정렬
-             *      -  {Number} width : 너비
-             *      -  {String} whiteSpace : 줄바꿈 설정
-             *      -  {Function} formatter : 출력 포멧
-             * 기타 옵션은 공식 document를 참조하자.
-             */
+            });        
 
             const sampleGrid = new Grid({
                 language: {
@@ -213,20 +181,20 @@
                             },
                         },
                     },
-                    el: document.getElementById('grid'),
-                    scrollX: true,
-                    scrollY: true,
-                    draggable: false,
-                    header: { height: 30 },
-                    bodyHeight: 200,
-                    contextMenu: null,
-                    columnOptions: {                        // [ columnOptions ]
+                el: document.getElementById('grid'),
+                scrollX: true,
+                scrollY: true,
+                draggable: false,
+                header: { height: 30 },
+                bodyHeight: 200,
+                contextMenu: null,
+                columnOptions: {                        // [ columnOptions ]
                         minWidth: 50,                       //  minWidth : 최소 너비 사이즈
                         resizable: true,                    //  resizable : 컬럼의 고정 폭을 조정 여부(boolean).
                         frozenCount: 0,                     //  frozenCount : 고정 컬럼의 개수
                         frozenBorderWidth: 1,               //  frozenBorderWidth : 고정 컬럼의 경계선 너비(px)
                     },
-                    columns: [
+                columns: [
                         {
                             header: '테스트아이디',
                             name: 'test_id',
@@ -271,10 +239,8 @@
                 });
 
                 return sampleGrid;
-            }
-
-     
-
+        }      
+        
         function ajaxData(createdGrid) {
             fetch('./getData')
                 .then(response => {
@@ -297,14 +263,14 @@
 
           // 변경된 데이터를 업데이트
           const newData = createdGrid.getFormattedRawData();
-
-          console.log(newData)
           const rowIndex = newData.findIndex(item => item.test_id === rowKey);
           if (rowIndex >= 0) {
             newData[rowIndex][columnName] = value;
           }
 
           createdGrid.resetData(newData);  
+
+
         
         });
 
