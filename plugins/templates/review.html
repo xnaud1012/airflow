@@ -277,7 +277,7 @@
                 console.log(updates.length,":길이")
 
                 for(var i =0;i<updates.length;i++){
-                    console.log(updates[i],"SDFSDF")
+                    updateData(updates[i])
                 }
 
                 
@@ -285,7 +285,9 @@
             }
 
         function updateData(rows){
-            $.ajax({
+
+            console.log(rows ,"rows")
+            /*$.ajax({
                     url: './updateData', // 서버의 데이터 저장 URL
                     method: 'POST',
                     contentType: 'application/json',
@@ -299,7 +301,7 @@
                     error: function(error) {
                         console.error('저장 실패:', error);
                     }
-                });
+                });*/
         }
 
        
