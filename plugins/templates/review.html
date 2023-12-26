@@ -274,19 +274,16 @@
                 const modifiedData = createdGrid.getModifiedRows();
                 console.log('저장할 데이터:', modifiedData.updatedRows);
                 updates=modifiedData.updatedRows
-                console.log(updates.length,":길이")
+                console.log(JSON.stringify(updates),"sdfdfsdfsdf")
 
-                for(var i =0;i<updates.length;i++){
-                    updateData(updates[i])
-                }
-
+              
                 
 
             }
 
         function updateData(rows){
 
-            console.log(rows ,"rows")
+       
             /*$.ajax({
                     url: './updateData', // 서버의 데이터 저장 URL
                     method: 'POST',
