@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('review_plugin.static', filename='./css/toast_ui/dist/tui-grid.min.css') }}">
+
+    <script src="{{ url_for('review_plugin.static', filename='./js/jquery-3.7.1.min.js') }}"></script>
+    
+    <!-- DataTables JS -->
+    <script src="{{ url_for('review_plugin.static', filename='./toast_ui/dist/tui-grid/dist/tui-grid.min.js') }}"></script>
+
+</head>
+<style>
+
+
+</style>
+<body>
+
+    <!-- 테이블 생성 -->
+    <div class="container">
+        <table id="grid" class="display" style="width:100%">
+          
+        </table>
+    </div>
+
+
+    <script>
+        $(document).ready(function() {
+            const initGrid = () => {
+              // 그리드 객체
+                const Grid = tui.Grid;
+
+                /**
+                 * Grid 테마 커스텀
+                 * Grid.applyTheme('striped', {...}) : 
+                 * default : 프리셋 (기본)
+                 * striped : 프리셋 (줄무늬)
+                 *  clean : 프리셋 (클린)
+                 *      - preset theme name. Available values are 'default', 'striped' and 'clean'.
+                 *      - https://nhn.github.io/tui.grid/latest/Grid#applyTheme
+                 */
+                Grid.applyTheme('striped',  {
+                    cell: {
+                        normal: {
+                            border: 'black'
+                        },
+                        header: {
+                            background: 'gray',
+                            text: 'white'
+                        },
+                        evenRow: {
+                            background: '#fee'
+                        }
+                    }
+                });
+
+                /**
+                 * 그리드 설정
+                 * {Dom} el : 그리드 element(DOM)
+                 *  {boolean} scrollX : X 스크롤 사용여부
+                 *  {boolean} scrollY : Y 스크롤 사용여부
+                 *  {boolean} draggable : 드레그 사용 여부
+                 * {Object} header
+                 *       {Number} height : 헤더 높이
+                 *  {Number} bodyHeight : 그리드 바디 높이
+                 *  {*} contextMenu : 마우스 우클릭 옵션
+                 *  {Array} columns :
+                 *      -  {String} header : 컬럼명(헤더)
+                 *      -  {String} name : 컬럼 name (input data와 이름이 일치해야함)
+                 *      -  {String} align : 정렬
+                 *      -  {Number} width : 너비
+                 *      -  {String} whiteSpace : 줄바꿈 설정
+                 *      -  {Function} formatter : 출력 포멧
+                 * 기타 옵션은 공식 document를 참조하자.
+                 */
+                
+                const sampleGrid = new Grid({
+                    el: document.getElementById('gridDiv'),
+                    scrollX: true,
+                    scrollY: true,
+                    draggable: false,
+                    header: { height: 30 },
+                    bodyHeight: 200,
+                    contextMenu: null,
+                    columns: [
+                        {
+                            header: '날짜',
+                            name: 'date',
+                            align: "center",
+                            width: 150,
+                            whiteSpace: 'normal',
+                            formatter: function (e) {
+                                return e.value
+                            },
+                        },
+                        {
+                            header: '이름',
+                            name: 'name',
+                            align: "left",
+                            width: 100,
+                            whiteSpace: 'normal',
+                            formatter: function (e) { 
+                                return e.value
+                            },
+                        },
+                        {
+                            header: '위치',
+                            name: 'location',
+                            align: "left",
+                            width: 150,
+                            whiteSpace: 'normal',
+                            formatter: function (e) {
+                                return e.value
+                            },
+                        },
+                    ]
+                });
+
+                return sampleGrid;
+            }
+
+            window.onload = () => {
+                // 그리드 설정
+                const createdGrid = initGrid();
+
+                // 샘플 데이터
+                const sampleData = [
+                    {
+                        date: '2022-12-04',
+                        name: '석봉박1',
+                        location: '부천',
+                    },
+                    {
+                        date: '2022-12-07',
+                        name: '석봉박2',
+                        location: '마곡',
+                    },
+                    {
+                        date: '2022-12-12',
+                        name: '석봉박3',
+                        location: '충주',
+                    }
+                ];
+
+                // 그리드에 데이터 넣기(출력)
+                createdGrid.resetData(sampleData);
+            }
+
+          
+        });
+    </script>
+
+
+</body>
+</html>
