@@ -49,7 +49,12 @@
                     },
                     row: {
                         even: {
-                        background: '#edeefc'
+                        background: '#edeefc',
+                        height: '32px'
+                        },
+                        odd:{
+                            height: '32px'
+
                         },
                         hover: {
                         background: '#7982ec'
@@ -244,7 +249,7 @@
                             header: '테스트아이디',
                             name: 'test_id',
                             align: "center",
-                            width: 150,
+        
                             editor:'text',
                             whiteSpace: 'normal',
                             formatter: function (e) {
@@ -255,7 +260,7 @@
                             header: 'A항목',
                             name: 'test_a',
                             align: "left",
-                            width: 100,
+                         
                             editor:'text',
                             whiteSpace: 'normal',
                             formatter: function (e) { 
@@ -267,7 +272,7 @@
                             name: 'test_b',
                             align: "left",
                             editor:'text',
-                            width: 150,
+                        
                             whiteSpace: 'normal',
                             formatter: function (e) {
                                 return e.value
@@ -277,7 +282,7 @@
                             header: 'C항목',
                             name: 'test_c',
                             align: "left",
-                            width: 150,
+                           
                             whiteSpace: 'normal',
                             formatter: function (e) {
                                 return e.value
