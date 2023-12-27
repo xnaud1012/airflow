@@ -13,7 +13,10 @@
 </head>
 <style>
 
-
+#grid {
+  width: 100%;
+  min-width: 0; /* 또는 적절한 최소 너비 값 */
+}
 </style>
 <body>
     <header id="header" class="header fixed-top d-flex align-items-center">
@@ -290,7 +293,7 @@
                             header: '테스트아이디',
                             name: 'test_id',
                             align: "center",
-                            width: '25%',
+                        
                             editor:'text',
                             whiteSpace: 'normal',
                             formatter: function (e) {
@@ -301,7 +304,7 @@
                             header: 'A항목',
                             name: 'test_a',
                             align: "left",
-                            width: '25%',
+                          
                             editor:'text',
                             whiteSpace: 'normal',
                             formatter: function (e) { 
@@ -313,7 +316,7 @@
                             name: 'test_b',
                             align: "left",
                             editor:'text',
-                            width: '25%',
+                         
                             whiteSpace: 'normal',
                             formatter: function (e) {
                                 return e.value
@@ -323,7 +326,7 @@
                             header: 'C항목',
                             name: 'test_c',
                             align: "left",
-                            width: '25%',
+                          
                             whiteSpace: 'normal',
                             formatter: function (e) {
                                 return e.value
