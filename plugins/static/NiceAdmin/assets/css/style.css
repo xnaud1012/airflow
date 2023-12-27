@@ -387,6 +387,16 @@ h6 {
   /* Search Bar */
 }
 
+.d-flex {
+  display: flex!important;
+}
+.fixed-top {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 1030;
+}
 .header .toggle-sidebar-btn {
   font-size: 32px;
   padding-left: 10px;
@@ -497,7 +507,9 @@ h6 {
 .header-nav .notifications {
   inset: 8px -15px auto auto !important;
 }
-
+.align-items-center {
+  align-items: center!important;
+}
 .header-nav .notifications .notification-item {
   display: flex;
   align-items: center;
