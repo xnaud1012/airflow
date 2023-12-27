@@ -3,6 +3,7 @@
 <head>
     <!-- DataTables CSS -->
     <link rel="stylesheet" type="text/css" href="{{ url_for('review_plugin.static', filename='./toast_ui/tui-grid/dist/tui-grid.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('review_plugin.static', filename='./NiceAdmin/assets/vendor/bootstrap-icons/bootstrap-icons.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('review_plugin.static', filename='./NiceAdmin/assets/css/style.css') }}">
     <script src="{{ url_for('review_plugin.static', filename='./js/jquery-3.7.1.min.js') }}"></script>   
     <script src="{{ url_for('review_plugin.static', filename='./NiceAdmin/assets/vendor/tinymce/tinymce.min.js') }}"></script>   
@@ -42,7 +43,10 @@
                         <div style="display: grid;grid-template-columns: 1fr 1fr 1fr">
                         <div></div>
                         <div></div>
-                        <div style="padding-right:10px;">  <button id ="saveButton" class="btn" style="float:right;" >Save</button></div>
+                        <div style="padding-right:10px;">  <button id ="saveButton" class="btn" style="float:right;" >
+                            <i class="bi bi-check"></i>    
+                            Save</button>
+                        </div>
                        
                         </div>
                         </div>
