@@ -77,14 +77,16 @@
         var csrf_token = "{{ csrf_token }}";
         const createdGrid = initGrid();
         ajaxData(createdGrid);     
+
+        window.addEventListener('resize', function() {
+                   
+                    createdGrid.refreshLayout();
+        });
        
 
         function initGrid() {
     // 그리드 객체
-            window.addEventListener('resize', function() {
-                    // 화면 크기가 변경될 때 그리드 레이아웃을 새로고침
-                    createdGrid.refreshLayout();
-                });
+         
 
             const Grid = tui.Grid;         
             Grid.applyTheme('custom',  
