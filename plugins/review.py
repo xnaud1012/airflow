@@ -94,35 +94,31 @@ class reviewAppBuilderBaseView(AppBuilderBaseView):
     
     @expose('/updateData', methods=['POST'])
     def updateData(self):
-        client_data = request.json
-        print(client_data)
+        client_data = request.json;
+        rowCount=0;
 
-        
-
-        
         try:
-            client_data = request.json
-            print(client_data)
-            pg_hook = PostgresHook('conn-db-postgres-custom') 
-            # 데이터베이스 연결 가져오기
+            client_data = request.json # ajax로부터 데이터 가져오기         
+            pg_hook = PostgresHook('conn-db-postgres-custom')   # 데이터베이스 연결 가져오기          
             conn = pg_hook.get_conn()
             cursor = conn.cursor()
-
             current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            client_data['test_c'] = current_time
 
-            query = self.extract_update_sql_query();      
-            cursor.execute(query, client_data)
-            data = cursor.fetchall();
-            conn.commit()
-            return jsonify({"success": 1})
+            for item in client_data:
+                item['test_c'] = current_time
+            query = self.extract_update_sql_query();  
+            cursor.executemany(query, client_data);
+            rowCount=cursor.rowcount
+            conn.commit(); 
+           
+            return jsonify({"success": rowCount});
+        
         except Exception as e:
             logging.error(f"Update failed: {e}")
             return jsonify({"error": str(e)}), 500
         
-        finally:
-        # 데이터베이스 연결과 커서는 사용 후에 반드시 닫아야 합니다
-            cursor.close()
+        finally:      
+            cursor.close()   # 데이터베이스 연결과 커서는 사용 후에 반드시 닫아야 한다.
             conn.close()
           
         
