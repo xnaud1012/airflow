@@ -16,7 +16,6 @@
 #grid {
   width: 100%;
   min-width: 0; /* 또는 적절한 최소 너비 값 */
-  transition: none;
 }
 </style>
 <body>
@@ -39,10 +38,15 @@
         <section class="section dashboard">
             <div class="container"> 
                 <div class="card" style="width:100%">
-                    <div class="card-header">※※header※※</div>
+                    <div class="card-header"> 
+                        <div style="display: grid;grid-template-columns: 1fr 1fr;">
+                         <button id ="saveButton" class="btn" >Save</button>
+                        </div>
+                        </div>
                     <div class="card-body">    
                       
-                        <div class="">    <button id ="saveButton" class="btn" >Save</button>
+                        <div>    
+                          
                             <div class="datatable-top">
                                
                             </div>
@@ -73,13 +77,20 @@
     </main>
 
 
-    <script>    
+    <script>   
+     
       $(document).ready(function() {
         var csrf_token = "{{ csrf_token }}";
         const createdGrid = initGrid();
         ajaxData(createdGrid);     
 
-      
+        window.addEventListener('resize', function() {
+
+        console.log('????')
+       
+        createdGrid.refreshLayout();
+        });
+       
 
         function initGrid() {
     // 그리드 객체
@@ -391,29 +402,6 @@
 
             }
 
-        function updateData(rows){
-
-       
-            /*$.ajax({
-                    url: './updateData', // 서버의 데이터 저장 URL
-                    method: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify(rows),
-                    beforeSend: function(xhr) {
-                        xhr.setRequestHeader('X-CSRFToken', csrf_token); // CSRF 토큰 설정
-                    },
-                    success: function(response) {
-                        console.log('저장 성공:', response);
-                    },
-                    error: function(error) {
-                        console.error('저장 실패:', error);
-                    }
-                });*/
-        }
-
-       
-
-        
     });
 
 
