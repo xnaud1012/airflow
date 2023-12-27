@@ -16,6 +16,7 @@
 #grid {
   width: 100%;
   min-width: 0; /* 또는 적절한 최소 너비 값 */
+  transition: none;
 }
 </style>
 <body>
@@ -78,13 +79,7 @@
         const createdGrid = initGrid();
         ajaxData(createdGrid);     
 
-        window.addEventListener('resize', function() {
-
-            console.log('????')
-                   
-                    createdGrid.refreshLayout();
-        });
-       
+      
 
         function initGrid() {
     // 그리드 객체
