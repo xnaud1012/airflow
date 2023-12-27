@@ -23,27 +23,35 @@
             <span class="d-none d-lg-block">전남대병원</span>
           </a>
        
-        </div><!-- End Logo -->
-    
-        <div class="search-bar">
-            <form class="search-form d-flex align-items-center" method="POST" action="#">
-              <input type="text" name="query" placeholder="Search" title="Enter search keyword">
-              <button type="submit" title="Search"><i class="bi bi-search"></i></button>
-            </form>
-          </div>
+        </div><!-- End Logo --> 
+
        
     
     </header>
+    <main id="main">
+        <div class="pagetitle">
+            <h1>데이터검증</h1>
+            <nav>
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item"><a href="javascript:void(0);">Home</a></li>
+                  <li class="breadcrumb-item active">TEST</li>
+                </ol>
+              </nav>
+        </div>
+        <section class="section dashboard">
+            <div class="container">
+                <button id ="saveButton">Save</button>
+                <table id="grid" class="display" style="width:100%">
+                
+                </table>
+            </div>
 
+        </section>
 
-    <div id="preview"></div>
-    <!-- 테이블 생성 -->
-    <div class="container">
-        <button id ="saveButton">Save</button>
-        <table id="grid" class="display" style="width:100%">
-          
-        </table>
-    </div>
+           
+            <!-- 테이블 생성 -->
+           
+    </main>
 
 
     <script>    
