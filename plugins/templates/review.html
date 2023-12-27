@@ -31,11 +31,9 @@
     
     </header>
     <main id="main">
-        <div class="pagetitle">
-            <h1>데이터검증TEST 화면</h1> 
-        </div>
+     
         <section class="section dashboard">
-            <div class="container">
+            <div class="container"> 
                 <div class="card" style="width:100%">
                     <div class="card-header">※※header※※</div>
                     <div class="card-body">    
@@ -45,7 +43,7 @@
                                
                             </div>
                             <div class="datatable-container"></div>
-                            <table id="grid" class="display" style="width:100%">
+                            <table id="grid" style="width:100%">
                             
                             </table>
 
@@ -292,7 +290,7 @@
                             header: '테스트아이디',
                             name: 'test_id',
                             align: "center",
-        
+                            width: '25%',
                             editor:'text',
                             whiteSpace: 'normal',
                             formatter: function (e) {
@@ -303,7 +301,7 @@
                             header: 'A항목',
                             name: 'test_a',
                             align: "left",
-                         
+                            width: '25%',
                             editor:'text',
                             whiteSpace: 'normal',
                             formatter: function (e) { 
@@ -315,7 +313,7 @@
                             name: 'test_b',
                             align: "left",
                             editor:'text',
-                        
+                            width: '25%',
                             whiteSpace: 'normal',
                             formatter: function (e) {
                                 return e.value
@@ -325,7 +323,7 @@
                             header: 'C항목',
                             name: 'test_c',
                             align: "left",
-                           
+                            width: '25%',
                             whiteSpace: 'normal',
                             formatter: function (e) {
                                 return e.value
