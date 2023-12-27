@@ -5,7 +5,7 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('review_plugin.static', filename='./toast_ui/tui-grid/dist/tui-grid.min.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('review_plugin.static', filename='./NiceAdmin/assets/css/style.css') }}">
     <script src="{{ url_for('review_plugin.static', filename='./js/jquery-3.7.1.min.js') }}"></script>   
-    <script src="{{ url_for('review_plugin.static', filename='./NiceAdmin/assets/js/tinymce.min.js') }}"></script>   
+    <script src="{{ url_for('review_plugin.static', filename='./NiceAdmin/assets/vendor/tinymce/tinymce.min.js') }}"></script>   
     <!-- DataTables JS -->
     <script src="{{ url_for('review_plugin.static', filename='./toast_ui/tui-grid/dist/tui-grid.min.js') }}"></script>
     <script src="{{ url_for('review_plugin.static', filename='./NiceAdmin/assets/js/main.js') }}"></script>
@@ -37,8 +37,9 @@
         <section class="section dashboard">
             <div class="container">
                 <div class="card" style="width:100%">
+                    <div class="card-header">※※header※※</div>
                     <div class="card-body">    
-                        <p>※※데이터검증하는 화면 예시※※</p>
+                      
                         <div class="">    <button id ="saveButton" class="btn" >Save</button>
                             <div class="datatable-top">
                                
