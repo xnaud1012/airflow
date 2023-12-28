@@ -271,12 +271,12 @@ h6 {
   font-family: "Poppins", sans-serif;
   font-size: 20px;
 }
-.btn-primary {
+.btn {
   background-color: #017cee;
   border-color: #017cee;
   color: #fff
 }
-.btn-primary:hover {
+.btn:hover {
   background-color: #0cb6ff;
   border-color: #0cb6ff;
   color: #fff
@@ -1209,11 +1209,7 @@ h6 {
   vertical-align: middle;
   white-space: nowrap
 }
-.btn:hover {
-  background-color: #c0defb;
-  color: #017cee;
-  text-decoration: none
-}
+
 
 
 .contact .php-email-form button[type=submit] {
