@@ -20,7 +20,10 @@
   /*min-width: 0; /* 또는 적절한 최소 너비 값 */
 }
 .tui-grid-header-area{
-    border-radius: 8px 8px 0px 0px;
+    border-radius: 8px 0px 0px 0px;
+}
+.tui-grid-scrollbar-right-top{
+    border-radius: 0px 8px 0px 0px;
 }
 .table>thead>tr>th {
     background-color: #f9f9f9 !important;
@@ -233,8 +236,8 @@
                     },
                         */                
                 el: document.getElementById('grid'),
-               // scrollX: true,
-              //  scrollY: true,
+                scrollX: true,
+                scrollY: true,
                 editable: true, // 전체 그리드에 대한 편집 가능 설정
                 draggable: false,
                 header: { 
