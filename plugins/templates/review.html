@@ -342,10 +342,10 @@
 
             const createdGrid = initGrid();
             ajaxData(createdGrid);       
-        
+           
             $(window).on('resize', function() {
-
-                console.log(window.grid.getWidth())
+                var gridWidth = window.grid.el.clientWidth;
+                console.log(gridWidth )
 
       
             });
