@@ -98,12 +98,7 @@
      
       $(document).ready(function() {
         var csrf_token = "{{ csrf_token }}";
-        const createdGrid = initGrid();
-        ajaxData(createdGrid);       
-        
-        $(window).on('resize', function() {
-        createdGrid.refreshLayout();
-    });
+       
 
         function initGrid() {
     // 그리드 객체
@@ -342,6 +337,13 @@
                 
 
             }
+
+            const createdGrid = initGrid();
+            ajaxData(createdGrid);       
+        
+            $(window).on('resize', function() {
+            createdGrid.refreshLayout();
+            });
 
     });
 
