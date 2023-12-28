@@ -292,6 +292,10 @@
                
                 });
 
+
+                window.grid = sampleGrid;
+
+
                 return sampleGrid;
         }      
         
@@ -341,8 +345,9 @@
         
             $(window).on('resize', function() {
 
-              
+                console.log(window.grid)
 
+      
             });
 
     });
