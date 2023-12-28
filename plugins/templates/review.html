@@ -125,10 +125,10 @@
                     },
                 cell: {
                         head: {
-                            background: '#017cee'
+                            background: '#f5f5f5'
                         },
                         header:{
-                            text:'#f0f0f0',
+                            text:'#365f84',
                         },
                         evenRow: {
                             background: '#f0f0f0'
@@ -239,12 +239,12 @@
                  },
                 bodyHeight: 200,
                 contextMenu: null,
-                columnOptions: {                        // [ columnOptions ]
+              /*  columnOptions: {                        // [ columnOptions ]
                         minWidth: 0,                       //  minWidth : 최소 너비 사이즈
                         resizable: true,                    //  resizable : 컬럼의 고정 폭을 조정 여부(boolean).
                         frozenCount: 0,                     //  frozenCount : 고정 컬럼의 개수
                         frozenBorderWidth: 1,               //  frozenBorderWidth : 고정 컬럼의 경계선 너비(px)
-                    },
+                    },*/
                 columns: [
                         {
                             header: '테스트아이디',
@@ -348,7 +348,7 @@
 
                 var newWidth = window.innerWidth * 0.95;
                 window.grid.el.style.minWidth = '0px'; // 최소 너비를 0으로 설정
-             
+                console.log('grid_width: ',gridWidth,'window_size :',newWidth)
                 window.grid.el.style.width = newWidth + 'px';
                 window.grid.refreshLayout();
 
