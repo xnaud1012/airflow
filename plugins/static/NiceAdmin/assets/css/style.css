@@ -271,7 +271,16 @@ h6 {
   font-family: "Poppins", sans-serif;
   font-size: 20px;
 }
-
+.btn-primary {
+  background-color: #017cee;
+  border-color: #017cee;
+  color: #fff
+}
+.btn-primary:hover {
+  background-color: #0cb6ff;
+  border-color: #0cb6ff;
+  color: #fff
+}
 /* Close Button */
 .btn-close {
   background-size: 25%;
@@ -1180,13 +1189,31 @@ h6 {
 }
 
 .btn {
-  background-color: #017cee;
-  border-color: #017cee;
-  color: #fff;
+  background: #fff;
+  border: 1px solid #017cee;
   border-radius: 4px;
+  color: #017cee;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.428571429;
+  margin-bottom: 0;
+  padding: 6px 12px;
+  text-align: center;
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  vertical-align: middle;
+  white-space: nowrap
 }
-
-
+.btn:hover {
+  background-color: #c0defb;
+  color: #017cee;
+  text-decoration: none
+}
 
 .table>thead>tr>th {
   background-color: #f0f0f0;
@@ -1196,11 +1223,6 @@ h6 {
   border-radius: 4px;
 }
 
-.btn.focus,.btn:focus,.btn:hover {
-  background-color: #0cb6ff;
-  border-color: #0cb6ff;
-  color: #fff
-}
 .contact .php-email-form button[type=submit] {
   background: #4154f1;
   border: 0;
