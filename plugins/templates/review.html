@@ -240,7 +240,7 @@
                 bodyHeight: 200,
                 contextMenu: null,
                 columnOptions: {                        // [ columnOptions ]
-                        minWidth: 50,                       //  minWidth : 최소 너비 사이즈
+                        minWidth: 0,                       //  minWidth : 최소 너비 사이즈
                         resizable: true,                    //  resizable : 컬럼의 고정 폭을 조정 여부(boolean).
                         frozenCount: 0,                     //  frozenCount : 고정 컬럼의 개수
                         frozenBorderWidth: 1,               //  frozenBorderWidth : 고정 컬럼의 경계선 너비(px)
@@ -340,7 +340,11 @@
             ajaxData(createdGrid);       
         
             $(window).on('resize', function() {
-            createdGrid.refreshLayout();
+
+                var windowWidth = $(window).width();
+                var gridWidth = Math.max(windowWidth - 20, 300); // 예시: 윈도우 너비에서 20px을 뺀 값과 300px 중 큰 값을 사용
+
+                setWidth(createdGrid, gridWidth, true);
 
             });
 
