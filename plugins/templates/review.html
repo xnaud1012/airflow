@@ -18,11 +18,20 @@
   width: 100%;
   max-width: 100%;
   border: 1px solid #f0f0f0;
-  
+
   /*min-width: 0; /* 또는 적절한 최소 너비 값 */
 }
-table {
-    background-color: transparent;
+.table>thead>tr>th {
+    background-color: #f9f9f9 !important;
+    border-bottom: 1px solid #fff !important;
+    vertical-align: bottom !important;
+    white-space: nowrap !important;
+}
+.table>tbody>tr>td,.table>tbody>tr>th,.table>tfoot>tr>td,.table>tfoot>tr>th,.table>thead>tr>td,.table>thead>tr>th {
+    border-top: 1px solid #ddd  !important;
+    line-height: 1.428571429  !important;
+    padding: 8px  !important;
+    vertical-align: middle  !important;
 }
 </style>
 <body>
@@ -102,57 +111,14 @@ table {
          
 
             const Grid = tui.Grid;         
-            Grid.applyTheme('custom',  
+            Grid.applyTheme('striped',  
             {
-                    selection: {
-                        background: '#4daaf9',
-                        border: '#004082'
-                    },
-                    scrollbar: {
-                        background: '#f5f5f5',
-                        thumb: '#d9d9d9',
-                        active: '#c1c1c1'
-                    },
-                    row: {
-                        even: {
-                        background: '#f0f0f0',
-                        height: '32px'
+                cell: {
+                        head: {
+                            background: '#f050505'
                         },
-                        odd:{
-                            height: '32px'
-
-                        },
-                        hover: {
-                        background: '#f5f5f5'
-                        }
-                    },
-                    cell: {
-                        normal: {
-                        background: '#ffffff',
-                        border: '#e0e0e0',
-                        showVerticalBorder: true
-                        },
-                        header: {
-                        background: '##f5f5f5',
-                        border: '#ccc',
-                        text:'#365f84',
-                        showVerticalBorder: true
-                        },
-                        rowHeader: {
-                        border: '#ccc',
-                        showVerticalBorder: true
-                        },
-                        editable: {
-                        background: '#fbfbfb'
-                        },
-                        selectedHeader: {
-                        background: '#d0e9c6'
-                        },
-                        focused: {
-                        border: '#e9e9e9'
-                        },
-                        disabled: {
-                        text: '#b0b0b0'
+                        evenRow: {
+                            background: '#f0f0f0'
                         }
                     }
                 });        
