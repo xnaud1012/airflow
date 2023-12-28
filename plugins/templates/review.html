@@ -348,8 +348,9 @@
 
                 var newWidth = window.innerWidth * 0.95;
                 window.grid.el.style.minWidth = '0px'; // 최소 너비를 0으로 설정
-                console.log('grid_width: ',gridWidth,'window_size :',newWidth)
+             
                 window.grid.el.style.width = newWidth + 'px';
+                window.grid.refreshLayout();
 
       
             });
