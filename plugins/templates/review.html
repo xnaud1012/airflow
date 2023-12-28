@@ -78,12 +78,11 @@
                     <div class="card-body">    
                       
                  
-                        <div id="grid-wrapper" style="float:left;width:100%;">
+                     
 
                             <table class="table" id="grid" style="margin-top:10px" >
                         
                             </table>
-                        </div>
 
                       
                     </div>
@@ -348,9 +347,12 @@
            
             $(window).on('resize', function() {
                 var gridWidth = window.grid.el.clientWidth;        
-                $('#grid-wrapper').width(300+'px')
 
-           window.grid.refreshLayout();
+                var newWidth = window.innerWidth * 0.95;
+                window.grid.el.style.minWidth = '0px'; // 최소 너비를 0으로 설정
+                console.log('grid_width: ',gridWidth,'window_size :',newWidth)
+                window.grid.el.style.width = newWidth + 'px';
+                window.grid.refreshLayout();
 
       
             });
