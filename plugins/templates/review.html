@@ -14,11 +14,11 @@
 </head>
 <style>
 
-/*#grid {
+#grid {
   width: 100%;
-  min-width: 30px;
+  min-width: 100px;
   /*min-width: 0; /* 또는 적절한 최소 너비 값 */
-/*}*/
+}
 .tui-grid-header-area{
     border-radius: 8px 0px 0px 0px;
 }
@@ -252,7 +252,7 @@
                             header: '테스트아이디',
                             name: 'test_id',
                             align: "center",
-                            minWidth :"100px",
+                        
                             editor:'text',
                             whiteSpace: 'normal',
                             formatter: function (e) {
@@ -263,7 +263,7 @@
                             header: 'A항목',
                             name: 'test_a',
                             align: "left",
-                            minWidth :"100px",
+                          
                             editor:'text',
                             whiteSpace: 'normal',
                             formatter: function (e) { 
@@ -274,7 +274,6 @@
                             header: 'B항목',
                             name: 'test_b',
                             align: "left",
-                            minWidth :"100px",
                             editor:'text',                         
                             whiteSpace: 'normal',
                             formatter: function (e) {
@@ -285,7 +284,7 @@
                             header: 'C항목',
                             name: 'test_c',
                             align: "left",
-                            minWidth :"100px",
+                          
                             whiteSpace: 'normal',
                             formatter: function (e) {
                                 return e.value
