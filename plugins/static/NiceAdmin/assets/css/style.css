@@ -1215,13 +1215,6 @@ h6 {
   text-decoration: none
 }
 
-.table>thead>tr>th {
-  background-color: #f0f0f0;
-  border-bottom: 1px solid #fff;
-  vertical-align: bottom;
-  white-space: nowrap;
-  border-radius: 4px;
-}
 
 .contact .php-email-form button[type=submit] {
   background: #4154f1;
