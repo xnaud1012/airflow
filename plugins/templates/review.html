@@ -98,7 +98,7 @@
 
 
     <script>   
-     
+     window.grid;
       $(document).ready(function() {
         var csrf_token = "{{ csrf_token }}";
        
@@ -292,6 +292,7 @@
                
                 });
 
+                window.grid=sampleGrid;
                 return sampleGrid;
         }      
         
@@ -338,13 +339,23 @@
 
             const createdGrid = initGrid();
             ajaxData(createdGrid);       
+      
         
             $(window).on('resize', function() {
 
-                var newWidth = window.innerWidth * 0.9;
-                createdGrid.setWidth(newWidth)
+                var grid = window.grid;
+                var newWidth = $(window).width() * 0.9;
 
-                createdGrid.refreshLayout();
+                if (grid && grid.setWidth) {
+        grid.setWidth(newWidth);
+    }
+    if (grid && grid.refreshLayout) {
+        grid.refreshLayout();
+    }
+                //var newWidth = window.innerWidth * 0.9;
+               // createdGrid.setWidth(newWidth)
+
+//                createdGrid.refreshLayout();
 
             });
 
