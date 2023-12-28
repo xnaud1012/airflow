@@ -17,9 +17,10 @@
 #grid {
   width: 100%;
   max-width: 100%;
-  border: 1px solid #f0f0f0;
-
   /*min-width: 0; /* 또는 적절한 최소 너비 값 */
+}
+.tui-grid-header-area{
+    border-radius: 8px 8px 0px 0px;
 }
 .table>thead>tr>th {
     background-color: #f9f9f9 !important;
@@ -147,53 +148,7 @@
                         },
                     }
                 },
-                theme: {
-                        selection: {
-                        background: '#4daaf9',
-                        border: '#004082'
-                    },
-                    scrollbar: {
-                        background: '#f5f5f5',
-                        thumb: '#d9d9d9',
-                        active: '#c1c1c1'
-                    },
-                    row: {
-                        even: {
-                        background: '#edeefc'
-                        },
-                        hover: {
-                        background: '#ccc'
-                        }
-                    },
-                    cell: {
-                        normal: {
-                        background: '#ffffff',
-                        border: '#e0e0e0',
-                        showVerticalBorder: true
-                        },
-                        header: {
-                        background: '#515ce6',
-                        color:'#ffffff',
-                        border: '#ccc',
-                        showVerticalBorder: true
-                        },
-                        rowHeader: {
-                        border: '#ccc',
-                        showVerticalBorder: true
-                        },
-                        editable: {
-                        background: '#fbfbfb'
-                        },
-                        selectedHeader: {
-                        background: '#d8d8d8'
-                        },
-                        focused: {
-                        border: '#418ed4'
-                        },
-                        disabled: {
-                        text: '#b0b0b0'
-                        }
-                    }
+              
                    /* presetName: "striped",                        // presetName : 기본 테마 설정 (default, striped, clean)
                     extOptions: {                               // <<커스텀 옵션설정>>
                         outline: {                              // [ outline ] : 그리드 바깥 선 설정
@@ -275,14 +230,16 @@
                                 },
                             },
                         },
-                        */
                     },
+                        */                
                 el: document.getElementById('grid'),
-                scrollX: true,
-                scrollY: true,
+               // scrollX: true,
+              //  scrollY: true,
                 editable: true, // 전체 그리드에 대한 편집 가능 설정
                 draggable: false,
-                header: { height: 30 },
+                header: { 
+                    height: 30
+                 },
                 bodyHeight: 200,
                 contextMenu: null,
                 columnOptions: {                        // [ columnOptions ]
@@ -318,8 +275,7 @@
                             header: 'B항목',
                             name: 'test_b',
                             align: "left",
-                            editor:'text',
-                         
+                            editor:'text',                         
                             whiteSpace: 'normal',
                             formatter: function (e) {
                                 return e.value
