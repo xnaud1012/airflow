@@ -341,10 +341,10 @@
         
             $(window).on('resize', function() {
 
-                var windowWidth = $(window).width();
-                var gridWidth = Math.max(windowWidth - 20, 300); // 예시: 윈도우 너비에서 20px을 뺀 값과 300px 중 큰 값을 사용
+                var newWidth = window.innerWidth * 0.9;
+                createdGrid.setWidth(newWidth)
 
-                setWidth(createdGrid, gridWidth, true);
+                createdGrid.refreshLayout();
 
             });
 
