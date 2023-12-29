@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!--jquery-->
+    <script src="{{ url_for('review_plugin.static', filename='./js/jquery-3.7.1.min.js') }}"></script>   
+
+    <script src="{{ url_for('review_plugin.static', filename='./js/jquery-3.7.1.min.js') }}"></script>   
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('review_plugin.static', filename='./toast_ui/tui-grid/dist/tui-grid.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('review_plugin.static', filename='./NiceAdmin/assets/vendor/bootstrap-icons/bootstrap-icons.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('review_plugin.static', filename='./NiceAdmin/assets/css/style.css') }}">
+
+    <script src="{{ url_for('review_plugin.static', filename='./NiceAdmin/assets/vendor/tinymce/tinymce.min.js') }}"></script>   
+    <!-- DataTables JS -->
+    <script src="{{ url_for('review_plugin.static', filename='./toast_ui/tui-grid/dist/tui-grid.min.js') }}"></script>
+    <script src="{{ url_for('review_plugin.static', filename='./NiceAdmin/assets/js/main.js') }}"></script>
+
+
+</head>
+<style>
+
+#grid {
+  width: 100%;
+  min-width: 100px;
+  /*min-width: 0; /* 또는 적절한 최소 너비 값 */
+}
+.tui-grid-header-area{
+    border-radius: 8px 0px 0px 0px;
+}
+.tui-grid-scrollbar-right-top{
+    border-radius: 0px 8px 0px 0px;
+}
+.table>thead>tr>th {
+    background-color: #f9f9f9 !important;
+    border-bottom: 1px solid #fff !important;
+    vertical-align: bottom !important;
+    white-space: nowrap !important;
+}
+
+.table>tbody>tr>td,.table>tbody>tr>th,.table>tfoot>tr>td,.table>tfoot>tr>th,.table>thead>tr>td,.table>thead>tr>th {
+    border-top: 1px solid #ddd  !important;
+    line-height: 1.428571429  !important;
+    padding: 8px  !important;
+    vertical-align: middle  !important;
+}
+.tui-grid-cell-header{
+    font-weight: bolder;
+}
+
+
+</style>
+<body>
+    <header id="header" class="header fixed-top d-flex align-items-center">
+
+        <div class="d-flex align-items-center justify-content-between">
+          <a href="javascript:void(0);" class="logo d-flex align-items-center">
+            <img src="{{ url_for('review_plugin.static', filename='./NiceAdmin/assets/img/logo.png') }}" alt="">
+           
+            <span class="d-none d-lg-block">전대병원TEST</span>
+          </a>
+       
+        </div><!-- End Logo --> 
+
+       
+    
+    </header>
+    <main id="main">
+     
+        <section class="section dashboard">
+            <div class="container"> 
+                <div class="card" style="width:100%">
+                    <div class="card-header"> 
+                        <div style="display: grid;grid-template-columns: 1fr 1fr 1fr">
+                            <div></div>
+                            <div></div>
+                            <div style="padding-right:10px;">  <button id ="saveButton" class="btn" style="float:right;" >
+                                <i class="bi bi-check"></i>    
+                                Save</button>
+                            </div>                     
+                        </div>
+                     </div>
+
+                    <div class="card-body">                
+                 
+                     
+
+                        <table class="table" id="grid" style="margin-top:10px" >
+                        
+                        </table>
+
+                      
+                    </div>
+                    
+                
+            </div>
+            </div>
+
+        </section>
+
+           
+            <!-- 테이블 생성 -->
+           
+    </main>
+
+
+    <script>   
+     
+      $(document).ready(function() {
+        var csrf_token = "{{ csrf_token }}";
+       
+
+        function initGrid() {
+    // 그리드 객체
+         
+
+            const Grid = tui.Grid;         
+            Grid.applyTheme('striped',  
+            {
+                row: {
+                        even: {
+                        background: '#f0f0f0',
+                        height: '32px'
+                        },
+                        odd:{
+                            height: '32px'
+
+                        },
+                        hover: {
+                        background: '#f5f5f5'
+                        }
+                    },
+                cell: {
+                        head: {
+                            background: '#f5f5f5'
+                        },
+                        header:{
+                            text:'#365f84',
+                        },
+                        evenRow: {
+                            background: '#f0f0f0'
+                        }
+                    }
+            });        
+
+            const sampleGrid = new Grid({
+                language: {
+                    localeCode: "ko",                           // localeCode : 언어 설정 (en, ko)
+                    data: {
+                        display: { 
+                            noData: "검색 결과가 없습니다.",      // noData : 빈 값일 때 표시하는 형식
+                        },
+                    }
+                },
+              
+                   /* presetName: "striped",                        // presetName : 기본 테마 설정 (default, striped, clean)
+                    extOptions: {                               // <<커스텀 옵션설정>>
+                        outline: {                              // [ outline ] : 그리드 바깥 선 설정
+                            border: '#bbbbbb',                  //  border : 색깔
+                            showVerticalBorder: true,           //  showVerticalBorder : 바깥 세로 선 여부(boolean)
+                        },
+                        selection: {                            // [ selection ] : 행, 열의 헤더를 선택하면 해당 부분이 선택되며 나오는 색상 설정
+                        //   background: '#f5d1ba',              //  background : 바탕색
+                        background : '#1eed11',
+                            border: '#bbbbbb',                  //  border : 선 색
+                        },
+                            scrollbar: {                            // [ scrollbar ] : 스크롤바
+                                border: 'rgb(205,205,205)',         //  border : 선 색
+                                background: 'rgb(248,248,248)',     //  background : 바탕 색
+                                emptySpace: 'rgb(240,240,240)',     //  emptySpace : 스크롤 빈 부분 색상
+                                thumb: 'rgb(205,205,205)',          //  thumb : 스크롤 부분 색상
+                                active: 'rgb(70,70,70)'             //  active : 마우스오버, 클릭할 때 색깔
+                            },
+                            frozenBorder: {                         // [ frozenBorder ] : 고정 컬럼 
+                                border: '#ccc',         //  border : 선 색 
+                            },
+                            area: {                                 // [area] : 검색 후 표시된 열을 제외한 부분 ( 표의 높이 - 열의 높이 = area )
+                                header: {                           
+                                    background: '#ffffff', //  header : 컬럼이 없는 헤더의 색상을 나타낸다.
+                                    border: '#ccc',                //  **border : [ cell ] - header 와 맞추는 것이 좋다. 현재는 오버되어 색상이 표기된다.
+                                },
+                                body: {                             //  body : 빈 열 값의 부분 색상
+                                    background: '#ffffff',              
+                                },
+                            },
+                        row: {                                  // [ row ] : 열
+                            hover: {                            // hover : 마우스 오버시
+                                background: '#ffffff',
+                            },
+                            dummy: {                            // dummy : 비활성 시
+                                background: '#ffffff',
+                            },
+                        },
+                        cell: {                             // [ cell ] : 각 셀의 색상 지정
+                            normal: {
+                                border: '#bbbbbb',
+                                text: 'black',
+                                showVerticalBorder: true,
+                                showHorizontalBorder: true,
+                            },
+                            header: {                       //  header : 상단 제목 열
+                                background: 'rgb(233, 233, 233)',
+                                border: '#bbbbbb',
+                                text: 'black',
+                                showVerticalBorder: true,
+                                showHorizontalBorder: true,
+                            },
+                            selectedHeader: {               //  selectedHeader : 선택한 제목 색상
+                                background: 'rgb(233, 233, 233)',
+                            },
+                            rowHeader: {                    //  rowHeader : 좌측 제목 행
+                                background: 'rgb(233, 233, 233)',
+                                border: '#bbbbbb',
+                                text: 'black',
+                                showVerticalBorder: true,
+                                showHorizontalBorder: true,
+                            },
+                            selectedRowHeader: {            //  selectedRowHeader : 선택한 열 색상
+                                background: 'rgb(233, 233, 233)',
+                            },
+                            focused: {                      //  focused : 선택한 셀 색상 
+                                background: "#f5d1ba",
+                                border: "#bbbbbb",
+                            },
+                            focusedInactive: {              //  focusedInactive : 선택 후 표 바깥을 선택하면 나타나는 색상
+                                border: "#bbbbbb"
+                            },
+                            summary: {                      //  summary : 요약 열에 사용할 색상
+                                    background: '#f1f5ff',
+                                    border: '#bbbbbb',
+                                    text: 'black',
+                                    showVerticalBorder: true,
+                                    showHorizontalBorder: true,
+                                },
+                            },
+                        },
+                    },
+                        */                
+                el: document.getElementById('grid'),
+                scrollX: true,
+                scrollY: true,
+                editable: true, // 전체 그리드에 대한 편집 가능 설정
+                draggable: false,
+                header: { 
+                    height: 30
+                 },
+                bodyHeight: 200,
+                contextMenu: null,
+              /*  columnOptions: {                        // [ columnOptions ]
+                        minWidth: 0,                       //  minWidth : 최소 너비 사이즈
+                        resizable: true,                    //  resizable : 컬럼의 고정 폭을 조정 여부(boolean).
+                        frozenCount: 0,                     //  frozenCount : 고정 컬럼의 개수
+                        frozenBorderWidth: 1,               //  frozenBorderWidth : 고정 컬럼의 경계선 너비(px)
+                    },*/
+                columns: [
+                        {
+                            header: '테스트아이디',
+                            name: 'test_id',
+                            align: "center",
+                        
+                            editor:'text',
+                            whiteSpace: 'normal',
+                            formatter: function (e) {
+                                return e.value
+                            },
+                        },
+                        {
+                            header: 'A항목',
+                            name: 'test_a',
+                            align: "left",
+                          
+                            editor:'text',
+                            whiteSpace: 'normal',
+                            formatter: function (e) { 
+                                return e.value
+                            },
+                        },
+                        {
+                            header: 'B항목',
+                            name: 'test_b',
+                            align: "left",
+                            editor:'text',                         
+                            whiteSpace: 'normal',
+                            formatter: function (e) {
+                                return e.value
+                            },
+                        },
+                        {
+                            header: 'C항목',
+                            name: 'test_c',
+                            align: "left",
+                          
+                            whiteSpace: 'normal',
+                            formatter: function (e) {
+                                return e.value
+                            },
+                        },
+                    ],
+               
+                });
+
+
+                window.grid = sampleGrid;
+
+
+                return sampleGrid;
+        }      
+        
+        function ajaxData(createdGrid) {
+            fetch('./getData')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    createdGrid.resetData(data);
+                })
+                .catch(error => {
+                    console.error('There was a problem with the fetch operation:', error);
+                });
+        }
+
+        $('#saveButton').on('click', function() {
+                saveChanges();
+        });
+
+
+        function saveChanges() {
+                const modifiedData = createdGrid.getModifiedRows();   
+                updates=modifiedData.updatedRows
+                $.ajax({
+                    url: './updateData', // 서버의 데이터 저장 URL
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(updates),
+                    beforeSend: function(xhr) {
+                        xhr.setRequestHeader('X-CSRFToken', csrf_token); // CSRF 토큰 설정
+                    },
+                    success: function(response) {
+                        console.log('저장 성공:', response);
+                    },
+                    error: function(error) {
+                        console.error('저장 실패:', error);
+                    }
+                });
+            }
+
+            const createdGrid = initGrid();
+            ajaxData(createdGrid);       
+           
+            $(window).on('resize', function() {
+                var gridWidth = window.grid.el.clientWidth;        
+
+                var newWidth = window.innerWidth * 0.95;
+              //  window.grid.el.style.minWidth = '0px'; // 최소 너비를 0으로 설정
+              //  console.log('grid_width: ',gridWidth,'window_size :',newWidth)
+              //  window.grid.el.style.width = newWidth + 'px';
+              //  window.grid.refreshLayout();
+
+      
+            });
+
+    });
+
+    </script>
+
+
+</body>
+</html>
