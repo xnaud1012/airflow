@@ -113,8 +113,8 @@
     // 그리드 객체
          
 
-            const Grid = tui.Grid;         
-            Grid.applyTheme('striped',  
+            const GridCustom = tui.Grid;         
+            GridCustom.applyTheme('striped',  
             {
                 row: {
                         even: {
@@ -142,7 +142,7 @@
                     }
             });        
 
-            const sampleGrid = new Grid({
+            const sampleGrid = new GridCustom({
                 language: {
                     localeCode: "ko",                           // localeCode : 언어 설정 (en, ko)
                     data: {
@@ -150,91 +150,7 @@
                             noData: "검색 결과가 없습니다.",      // noData : 빈 값일 때 표시하는 형식
                         },
                     }
-                },
-              
-                   /* presetName: "striped",                        // presetName : 기본 테마 설정 (default, striped, clean)
-                    extOptions: {                               // <<커스텀 옵션설정>>
-                        outline: {                              // [ outline ] : 그리드 바깥 선 설정
-                            border: '#bbbbbb',                  //  border : 색깔
-                            showVerticalBorder: true,           //  showVerticalBorder : 바깥 세로 선 여부(boolean)
-                        },
-                        selection: {                            // [ selection ] : 행, 열의 헤더를 선택하면 해당 부분이 선택되며 나오는 색상 설정
-                        //   background: '#f5d1ba',              //  background : 바탕색
-                        background : '#1eed11',
-                            border: '#bbbbbb',                  //  border : 선 색
-                        },
-                            scrollbar: {                            // [ scrollbar ] : 스크롤바
-                                border: 'rgb(205,205,205)',         //  border : 선 색
-                                background: 'rgb(248,248,248)',     //  background : 바탕 색
-                                emptySpace: 'rgb(240,240,240)',     //  emptySpace : 스크롤 빈 부분 색상
-                                thumb: 'rgb(205,205,205)',          //  thumb : 스크롤 부분 색상
-                                active: 'rgb(70,70,70)'             //  active : 마우스오버, 클릭할 때 색깔
-                            },
-                            frozenBorder: {                         // [ frozenBorder ] : 고정 컬럼 
-                                border: '#ccc',         //  border : 선 색 
-                            },
-                            area: {                                 // [area] : 검색 후 표시된 열을 제외한 부분 ( 표의 높이 - 열의 높이 = area )
-                                header: {                           
-                                    background: '#ffffff', //  header : 컬럼이 없는 헤더의 색상을 나타낸다.
-                                    border: '#ccc',                //  **border : [ cell ] - header 와 맞추는 것이 좋다. 현재는 오버되어 색상이 표기된다.
-                                },
-                                body: {                             //  body : 빈 열 값의 부분 색상
-                                    background: '#ffffff',              
-                                },
-                            },
-                        row: {                                  // [ row ] : 열
-                            hover: {                            // hover : 마우스 오버시
-                                background: '#ffffff',
-                            },
-                            dummy: {                            // dummy : 비활성 시
-                                background: '#ffffff',
-                            },
-                        },
-                        cell: {                             // [ cell ] : 각 셀의 색상 지정
-                            normal: {
-                                border: '#bbbbbb',
-                                text: 'black',
-                                showVerticalBorder: true,
-                                showHorizontalBorder: true,
-                            },
-                            header: {                       //  header : 상단 제목 열
-                                background: 'rgb(233, 233, 233)',
-                                border: '#bbbbbb',
-                                text: 'black',
-                                showVerticalBorder: true,
-                                showHorizontalBorder: true,
-                            },
-                            selectedHeader: {               //  selectedHeader : 선택한 제목 색상
-                                background: 'rgb(233, 233, 233)',
-                            },
-                            rowHeader: {                    //  rowHeader : 좌측 제목 행
-                                background: 'rgb(233, 233, 233)',
-                                border: '#bbbbbb',
-                                text: 'black',
-                                showVerticalBorder: true,
-                                showHorizontalBorder: true,
-                            },
-                            selectedRowHeader: {            //  selectedRowHeader : 선택한 열 색상
-                                background: 'rgb(233, 233, 233)',
-                            },
-                            focused: {                      //  focused : 선택한 셀 색상 
-                                background: "#f5d1ba",
-                                border: "#bbbbbb",
-                            },
-                            focusedInactive: {              //  focusedInactive : 선택 후 표 바깥을 선택하면 나타나는 색상
-                                border: "#bbbbbb"
-                            },
-                            summary: {                      //  summary : 요약 열에 사용할 색상
-                                    background: '#f1f5ff',
-                                    border: '#bbbbbb',
-                                    text: 'black',
-                                    showVerticalBorder: true,
-                                    showHorizontalBorder: true,
-                                },
-                            },
-                        },
-                    },
-                        */                
+                },                
                 el: document.getElementById('grid'),
                 scrollX: true,
                 scrollY: true,
