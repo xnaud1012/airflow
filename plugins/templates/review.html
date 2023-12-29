@@ -91,6 +91,7 @@
     var csrf_token = "{{ csrf_token }}";   
     
     initGrid()
+    ajaxData()
     $("#grid").jqGrid('navGrid','#pjopt',{edit:true,add:false,del:false});
     
     });
@@ -177,7 +178,7 @@
         }
 
         const createdGrid = initGrid();
-        ajaxData(createdGrid);       
+ 
            
         $(window).on('resize', function() {
           
