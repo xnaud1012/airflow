@@ -7,9 +7,9 @@
 
     <!--jq Grid-->
 
-    
+
     <link rel="stylesheet" type="text/css" media="screen" href="{{ url_for('review_plugin.static', filename='./jquery-ui-1.13.2/jquery-ui.css')}}">
-    <link rel="stylesheet" type="text/css" media="screen" href="{{ url_for('review_plugin.static', filename='./jquery.jqGrid-4.4.3/css/ui.jqgrid.css) }}">
+    <link rel="stylesheet" type="text/css" media="screen" href="{{ url_for('review_plugin.static', filename='./jquery.jqGrid-4.4.3/css/ui.jqgrid.css') }}">
     <script src="{{ url_for('review_plugin.static', filename='./jquery.jqGrid-4.4.3/js/jquery-1.7.2.min.js')}}"></script>   
     <script src="{{ url_for('review_plugin.static', filename='./jquery.jqGrid-4.4.3/js/i18n/grid.locale-kr.js')}}"></script>  
     <script src="{{ url_for('review_plugin.static', filename='./jquery.jqGrid-4.4.3/js/jquery.jqGrid.min.js')}}"></script>  
@@ -90,7 +90,7 @@
     $(document).ready(function() {
     var csrf_token = "{{ csrf_token }}";   
     
-    $("#grid").jqGrid('navGrid','#pjopt',{edit:true,add:false,del:false});
+    initGrid()
     });
        
 
@@ -123,7 +123,7 @@
             height: '100%'
         });
         
-
+        $("#grid").jqGrid('navGrid','#pjopt',{edit:true,add:false,del:false});
     
     }      
         
