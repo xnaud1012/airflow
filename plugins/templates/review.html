@@ -228,7 +228,10 @@
                     url: './updateData', // 서버의 데이터 저장 URL
                     method: 'POST',
                     contentType: 'application/json',
-                    data: JSON.stringify(updates),              
+                    data: JSON.stringify(updates), 
+                    beforeSend: function(xhr) {
+                        xhr.setRequestHeader('X-CSRFToken', csrf_token); // CSRF 토큰 설정
+                    },             
                     success: function(response) {
                         console.log('저장 성공:', response);
                     },
