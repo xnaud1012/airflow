@@ -104,121 +104,116 @@
 
 
     <script>   
-     
-      $(document).ready(function() {
-        var csrf_token = "{{ csrf_token }}";
-       
+     var csrf_token;
+    $(document).ready(function() {
+        csrf_token = "{{ csrf_token }}";
+        const createdGrid = initGrid();
+        ajaxData(createdGrid);       
+    });
 
-        function initGrid() {
-    // 그리드 객체
+    $(window).on('resize', function() {
+        var gridWidth = window.grid.el.clientWidth;       
+        var newWidth = window.innerWidth * 0.95;      
+    });
+    function initGrid() { // 그리드 객체 생성
+
          
 
-            const GridCustom = tui.Grid;         
-            GridCustom.applyTheme('striped',  
-            {
-                row: {
-                        even: {
-                        background: '#f0f0f0',
-                        height: '32px'
-                        },
-                        odd:{
-                            height: '32px'
-
-                        },
-                        hover: {
-                        background: '#f5f5f5'
-                        }
+        const GridCustom = tui.Grid;         
+        GridCustom.applyTheme('striped',  
+        {
+            row: {
+                    even: {
+                    background: '#f0f0f0',
+                    height: '32px'
                     },
-                cell: {
-                        head: {
-                            background: '#f5f5f5'
-                        },
-                        header:{
-                            text:'#365f84',
-                        },
-                        evenRow: {
-                            background: '#f0f0f0'
-                        }
+                    odd:{
+                        height: '28px'
+                    },
+                    hover: {
+                    background: '#f5f5f5'
                     }
-            });        
+                },
+            cell: {
+                    head: {
+                        background: '#f5f5f5'
+                    },
+                    header:{
+                        text:'#365f84',
+                    },
+                    evenRow: {
+                        background: '#f0f0f0'
+                    }
+                }
+        });        
 
-            const sampleGrid = new GridCustom({
-                language: {
-                    localeCode: "ko",                           // localeCode : 언어 설정 (en, ko)
-                    data: {
-                        display: { 
-                            noData: "검색 결과가 없습니다.",      // noData : 빈 값일 때 표시하는 형식
+        const sampleGrid = new GridCustom({
+            language: {
+                localeCode: "ko",                           // localeCode : 언어 설정 (en, ko)
+                data: {
+                    display: { 
+                        noData: "검색 결과가 없습니다.",      // noData : 빈 값일 때 표시하는 형식
+                    },
+                }
+            },                
+            el: document.getElementById('grid'),
+            scrollX: true,
+            scrollY: true,
+            editable: true, // 전체 그리드에 대한 편집 가능 설정
+            draggable: false,
+            header: { 
+                height: 30
+                },
+            bodyHeight: 200,
+            contextMenu: null, 
+            columns: [
+                    {
+                        header: '테스트아이디',
+                        name: 'test_id',
+                        align: "center",
+                    
+                        editor:'text',
+                        whiteSpace: 'normal',
+                        formatter: function (e) {
+                            return e.value
                         },
-                    }
-                },                
-                el: document.getElementById('grid'),
-                scrollX: true,
-                scrollY: true,
-                editable: true, // 전체 그리드에 대한 편집 가능 설정
-                draggable: false,
-                header: { 
-                    height: 30
-                 },
-                bodyHeight: 200,
-                contextMenu: null,
-              /*  columnOptions: {                        // [ columnOptions ]
-                        minWidth: 0,                       //  minWidth : 최소 너비 사이즈
-                        resizable: true,                    //  resizable : 컬럼의 고정 폭을 조정 여부(boolean).
-                        frozenCount: 0,                     //  frozenCount : 고정 컬럼의 개수
-                        frozenBorderWidth: 1,               //  frozenBorderWidth : 고정 컬럼의 경계선 너비(px)
-                    },*/
-                columns: [
-                        {
-                            header: '테스트아이디',
-                            name: 'test_id',
-                            align: "center",
+                    },
+                    {
+                        header: 'A항목',
+                        name: 'test_a',
+                        align: "left",
                         
-                            editor:'text',
-                            whiteSpace: 'normal',
-                            formatter: function (e) {
-                                return e.value
-                            },
+                        editor:'text',
+                        whiteSpace: 'normal',
+                        formatter: function (e) { 
+                            return e.value
                         },
-                        {
-                            header: 'A항목',
-                            name: 'test_a',
-                            align: "left",
-                          
-                            editor:'text',
-                            whiteSpace: 'normal',
-                            formatter: function (e) { 
-                                return e.value
-                            },
+                    },
+                    {
+                        header: 'B항목',
+                        name: 'test_b',
+                        align: "left",
+                        editor:'text',                         
+                        whiteSpace: 'normal',
+                        formatter: function (e) {
+                            return e.value
                         },
-                        {
-                            header: 'B항목',
-                            name: 'test_b',
-                            align: "left",
-                            editor:'text',                         
-                            whiteSpace: 'normal',
-                            formatter: function (e) {
-                                return e.value
-                            },
+                    },
+                    {
+                        header: 'C항목',
+                        name: 'test_c',
+                        align: "left",
+                        
+                        whiteSpace: 'normal',
+                        formatter: function (e) {
+                            return e.value
                         },
-                        {
-                            header: 'C항목',
-                            name: 'test_c',
-                            align: "left",
-                          
-                            whiteSpace: 'normal',
-                            formatter: function (e) {
-                                return e.value
-                            },
-                        },
-                    ],
-               
-                });
-
-
-                window.grid = sampleGrid;
-
-
-                return sampleGrid;
+                    },
+                ],
+            
+            });
+        window.grid = sampleGrid;
+        return sampleGrid;
         }      
         
         function ajaxData(createdGrid) {
@@ -260,19 +255,9 @@
                 });
             }
 
-            const createdGrid = initGrid();
-            ajaxData(createdGrid);       
-           
-            $(window).on('resize', function() {
-                var gridWidth = window.grid.el.clientWidth;        
-
-                var newWidth = window.innerWidth * 0.95;
+       
 
 
-      
-            });
-
-    });
 
     </script>
 
