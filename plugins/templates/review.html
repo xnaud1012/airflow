@@ -91,9 +91,8 @@
     var csrf_token = "{{ csrf_token }}";   
     
     initGrid()
-    ajaxData()
-    $("#grid").jqGrid('navGrid','#pjopt',{edit:true,add:false,del:false});
-    
+
+ 
     });
        
 
@@ -101,7 +100,8 @@
 
 
         $("#grid").jqGrid({       
-         
+            url:'./getData',
+            loadtext:'loading...',
             colNames:['테스트 ID','테스트A항목','테스트B항목','테스트C항목'],
             colModel: [
                 { name: 'test_id', width: 75 },
@@ -112,7 +112,7 @@
             ],
             rowNum:10,
             autowidth:true,
-            datatype:'local',
+            datatype:'json',
             rowList:[10,20,30],
             pager: '#pager',
             sortname: 'test_id',
@@ -123,7 +123,7 @@
                 id: "0"
             },
             caption:"데이터검증 TEST",         
-            height: '100%'
+            height: '100'
         });
         
     
