@@ -80,24 +80,14 @@
                         </div>
                      </div>
 
-                    <div class="card-body">                
-                 
-                     
-
+                    <div class="card-body">      
                         <table class="table" id="grid" style="margin-top:10px" >
                         
                         </table>
-
-                      
                     </div>
-                    
-                
             </div>
-            </div>
-
+        </div>
         </section>
-
-           
             <!-- 테이블 생성 -->
            
     </main>
@@ -115,9 +105,7 @@
         var gridWidth = window.grid.el.clientWidth;       
         var newWidth = window.innerWidth * 0.95;      
     });
-    function initGrid() { // 그리드 객체 생성
-
-         
+    function initGrid() { // 그리드 객체 생성        
 
         const GridCustom = tui.Grid;         
         GridCustom.applyTheme('striped',  
@@ -146,8 +134,7 @@
                     }
                 }
         });        
-
-        const sampleGrid = new GridCustom({
+        const newGrid = new GridCustom({
             language: {
                 localeCode: "ko",                           // localeCode : 언어 설정 (en, ko)
                 data: {
@@ -209,8 +196,8 @@
                 ],
             
             });
-        window.grid = sampleGrid;
-        return sampleGrid;
+        window.grid = newGrid;
+        return newGrid;
         }      
         
         function ajaxData(createdGrid) {
@@ -235,14 +222,13 @@
 
 
         function saveChanges() {
-                const modifiedData = createdGrid.getModifiedRows();   
+                const modifiedData = window.grid.getModifiedRows();   
                 updates=modifiedData.updatedRows
                 $.ajax({
                     url: './updateData', // 서버의 데이터 저장 URL
                     method: 'POST',
                     contentType: 'application/json',
-                    data: JSON.stringify(updates),
-              
+                    data: JSON.stringify(updates),              
                     success: function(response) {
                         console.log('저장 성공:', response);
                     },
@@ -251,11 +237,6 @@
                     }
                 });
             }
-
-       
-
-
-
     </script>
 
 
