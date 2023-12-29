@@ -91,16 +91,16 @@
     var csrf_token = "{{ csrf_token }}";   
     
     initGrid()
+    $("#grid").jqGrid('navGrid','#pjopt',{edit:true,add:false,del:false});
+    
     });
        
 
     function initGrid() {
 
 
-        $("#grid").jqGrid({
-            url:"./getData",
-            mtype: "GET",
-            datatype: "json",
+        $("#grid").jqGrid({       
+         
             colNames:['테스트 ID','테스트A항목','테스트B항목','테스트C항목'],
             colModel: [
                 { name: 'test_id', width: 75 },
@@ -110,8 +110,10 @@
             
             ],
             rowNum:10,
+            autowidth:true,
+            datatype:'local',
             rowList:[10,20,30],
-            pager: '#',
+            pager: '#pager',
             sortname: 'test_id',
             viewrecords: true,
             sortorder: "asc",
@@ -119,15 +121,17 @@
                 repeatitems : false,
                 id: "0"
             },
-         
+            caption:"데이터검증 TEST",         
             height: '100%'
         });
         
-        $("#grid").jqGrid('navGrid','#pjopt',{edit:true,add:false,del:false});
     
-    }      
+    
+    }     
+    
         
     function ajaxData() {
+        var listData;
         fetch('./getData')
             .then(response => {
                 if (!response.ok) {
@@ -136,7 +140,11 @@
                 return response.json();
             })
             .then(data => {
-                
+                console.log(data)
+                $('#grid').clearGridData();
+                $('#grid').jqGrid('setGridParam',{data:data.listData});
+                $('#grid').trigger('reloadGrid');
+
             })
             .catch(error => {
                 console.error('There was a problem with the fetch operation:', error);
