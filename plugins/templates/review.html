@@ -102,14 +102,16 @@
         const createdGrid = initGrid();
         ajaxData(createdGrid);       
 
+        var initLength = $('#grid .tui-grid-rside-area').width();
+        var initialWindowWidth = $(window).width();
+        var widthPercent = initLength / initialWindowWidth; 
+        console.log(widthPercent)
 
-        $(window).on('resize', function() {
 
-            var initLength = $('#grid .tui-grid-rside-area').width();
+        $(window).on('resize', function() {         
     
-            var nowWindow = $(window).width();
-            var windowLength = initLength / initialWindowWidth;  
-            var afterLength = nowWindow * windowLength;   
+            var nowWindow = $(window).width();         
+            var afterLength = nowWindow * widthPercent;   
             $('#grid .tui-grid-rside-area').width(afterLength);
             
             console.log($('#grid .tui-grid-rside-area'))
