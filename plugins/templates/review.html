@@ -104,7 +104,9 @@
 
 
         $(window).on('resize', function() {
-                   
+
+            var initLength = $('#grid .tui-grid-rside-area').width();
+    
             var nowWindow = $(window).width();
             var windowLength = initLength / initialWindowWidth;  
             var afterLength = nowWindow * windowLength;   
