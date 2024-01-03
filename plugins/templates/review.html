@@ -101,6 +101,19 @@
         csrf_token = "{{ csrf_token }}";
         const createdGrid = initGrid();
         ajaxData(createdGrid);       
+
+
+        $(window).on('resize', function() {
+                   
+            var nowWindow = $(window).width();
+            var windowLength = initLength / initialWindowWidth;  
+            var afterLength = nowWindow * windowLength;   
+            $('#grid .tui-grid-rside-area').width(afterLength);
+            
+            console.log($('#grid .tui-grid-rside-area'))
+         
+        });  
+
     });
 
     $(window).on('resize', function() {
