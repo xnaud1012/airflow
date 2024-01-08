@@ -15,8 +15,7 @@ import logging
 with DAG(
         dag_id='dag_oracle_to_postgres2',
         start_date=pendulum.datetime(2023, 12, 1, tz='Asia/Seoul'),
-        #schedule="*/2 * * * *",
-        schedule=None,
+        schedule="*/10 * * * *",
         catchup=False
 ) as dag:
       
@@ -100,7 +99,6 @@ with DAG(
                         
                         update_params = [{'test_id': item['test_id']} for item in extracted_oracle_list]
                         oracle_update_cursor.executemany(update_query, update_params)
-
                     oracle_conn.commit()
                     postgres_conn.commit()
                 except Exception as e:
