@@ -74,14 +74,18 @@ with DAG(
             oracle_cursor.execute(select_query)
             columns = [col[0] for col in oracle_cursor.description]
             extracted_oracle_list = []
-            print(columns)
+            
+            logging.info(columns)
+            logging.error(f"Update failed:*******************************1")
             with postgres_conn.cursor() as postgres_cursor:
                 while True:
                     rows = oracle_cursor.fetchmany(100)
+                    logging.info("fatchmany------------------------------2")
+                    logging.error(f"Update failed:*******************************2")
                     if not rows:
                         break
                     extracted_oracle_list = [dict(zip(columns, row)) for row in rows]
-                    print(extracted_oracle_list)
+                   
                     try:
                         postgres_cursor.executemany(update_query, extracted_oracle_list)
                         postgres_conn.commit()
