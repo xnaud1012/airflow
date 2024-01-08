@@ -1,7 +1,7 @@
 import cx_Oracle
 from contextlib import closing
 import pandas as pd
-import psycopg2
+from airflow.models import Variable
 import os
 import re
 from airflow.hooks.base import BaseHook 
@@ -40,6 +40,7 @@ with DAG(
 
         select_query = clean_sql_query(select_sql_path)
         update_query = clean_sql_query(update_sql_path)
+        
 
         ti.xcom_push(key="select_query", value=select_query)
         ti.xcom_push(key="update_query", value=update_query)
@@ -63,6 +64,9 @@ with DAG(
         if lob_data is not None and isinstance(lob_data, cx_Oracle.LOB):
             return lob_data.read()
         return lob_data
+    
+    def set_last_run_time():
+        Variable.set("timeStamp", pendulum.now('Asia/Seoul').to_datetime_string())
 
     
     @task(task_id='execute')
@@ -70,6 +74,9 @@ with DAG(
         ti = kwargs['ti']        
         select_query = ti.xcom_pull(key="select_query", task_ids = 'cleanedQuery')
         update_query = ti.xcom_pull(key="update_query", task_ids = 'cleanedQuery')  
+        timeStamp = Variable.get("timeStamp", default_var=str(pendulum.datetime(2024, 1, 1)))
+
+        select_query = select_query.replace(":timeStamp", f"'{timeStamp}'")
        
 
 
@@ -78,8 +85,7 @@ with DAG(
             columns = [col[0].lower() for col in oracle_cursor.description]
             extracted_oracle_list = []
             
-            logging.info(columns)
-            logging.error(f"Update failed:*******************************1")
+
             with postgres_conn.cursor() as postgres_cursor:
                 while True:
                     rows = oracle_cursor.fetchmany(100)
@@ -98,19 +104,3 @@ with DAG(
 
         
     extract_select_sql_query()>>execute()
-
-
-    
-     
-
-
-
-
-
-
-
-   
-
-
-
-        

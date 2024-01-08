@@ -105,7 +105,7 @@ class reviewAppBuilderBaseView(AppBuilderBaseView):
             current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
             for item in client_data:
-                item['test_c'] = current_time
+                item['dates'] = current_time
             query = self.extract_update_sql_query();  
             cursor.executemany(query, client_data);
             rowCount=cursor.rowcount
