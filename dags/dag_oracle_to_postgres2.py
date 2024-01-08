@@ -72,7 +72,7 @@ with DAG(
 
         with closing(connect_oracle().cursor()) as oracle_cursor, connect_postgres() as postgres_conn:
             oracle_cursor.execute(select_query)
-            columns = [col[0] for col in oracle_cursor.description]
+            columns = [col[0].lower() for col in oracle_cursor.description]
             extracted_oracle_list = []
             
             logging.info(columns)
