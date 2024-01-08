@@ -81,30 +81,36 @@ with DAG(
         update_query = ti.xcom_pull(key="update_query", task_ids = 'cleanedQuery')  
 
 
-        with closing(connect_oracle().cursor()) as oracle_cursor, connect_postgres() as postgres_conn, connect_oracle().cursor() as oracle_update_cursor:
+        with connect_oracle() as oracle_conn, connect_postgres() as postgres_conn:
+            oracle_cursor = oracle_conn.cursor()
+            oracle_update_cursor = oracle_conn.cursor()
+            
             oracle_cursor.execute(select_query)
             columns = [col[0].lower() for col in oracle_cursor.description]
+            
             with postgres_conn.cursor() as postgres_cursor:
-                while True:
-                    rows = oracle_cursor.fetchmany(200)
-                    if not rows:
-                        break
-                    extracted_oracle_list = [{col: convert_lob_to_string(row[idx]) for idx, col in enumerate(columns)} for row in rows]
-
-                    try:
-                        postgres_cursor.executemany(insert_query, extracted_oracle_list) 
-                        postgres_conn.commit()                   
+                try:
+                    while True:
+                        rows = oracle_cursor.fetchmany(100)
+                        if not rows:
+                            break
+                        
+                        extracted_oracle_list = [{col: convert_lob_to_string(row[idx]) for idx, col in enumerate(columns)} for row in rows]
+                        postgres_cursor.executemany(insert_query, extracted_oracle_list)
+                        
                         update_params = [{'test_id': row[0]} for row in rows]
-                        
-                        oracle_update_cursor.executemany(update_query,update_params)
+                        oracle_update_cursor.executemany(update_query, update_params)
 
-                        
-                        
-                    except Exception as e:
-                        connect_oracle().rollback()  # Oracle 트랜잭션 롤백
-                        postgres_conn.rollback()  # PostgreSQL 트랜잭션 롤백
-                        logging.error(f"Operation failed: {e}")
-                    connect_oracle().commit()
+                    oracle_conn.commit()
+                    postgres_conn.commit()
+                except Exception as e:
+                    oracle_conn.rollback()
+                    postgres_conn.rollback()
+                    logging.error(f"Operation failed: {e}")
+                    raise e
+                finally:
+                    oracle_cursor.close()
+                    oracle_update_cursor.close()
                     
         
     extract_sql_query()>>execute()
