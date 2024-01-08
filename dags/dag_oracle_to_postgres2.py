@@ -98,8 +98,8 @@ with DAG(
                         extracted_oracle_list = [{col: convert_lob_to_string(row[idx]) for idx, col in enumerate(columns)} for row in rows]
                         postgres_cursor.executemany(insert_query, extracted_oracle_list)
                         
-                        update_params = [{'test_id': row[0]} for row in rows]
-                        oracle_update_cursor.executemany(update_query, update_params)
+                        #update_params = [{'test_id': row[0]} for row in rows]
+                        oracle_update_cursor.executemany(update_query, extracted_oracle_list)
 
                     oracle_conn.commit()
                     postgres_conn.commit()
