@@ -15,7 +15,8 @@ import logging
 with DAG(
         dag_id='dag_oracle_to_postgres2',
         start_date=pendulum.datetime(2023, 12, 1, tz='Asia/Seoul'),
-        schedule="*/2 * * * *",
+        #schedule="*/2 * * * *",
+        schedule=None,
         catchup=False
 ) as dag:
       
@@ -80,36 +81,27 @@ with DAG(
         update_query = ti.xcom_pull(key="update_query", task_ids = 'cleanedQuery')  
 
 
-        with connect_oracle() as oracle_conn, connect_postgres() as postgres_conn:
-            oracle_cursor = oracle_conn.cursor()
-            oracle_update_cursor = oracle_conn.cursor()
-            
+        with closing(connect_oracle().cursor()) as oracle_cursor, connect_postgres() as postgres_conn, connect_oracle().cursor() as oracle_update_cursor:
             oracle_cursor.execute(select_query)
             columns = [col[0].lower() for col in oracle_cursor.description]
-            
             with postgres_conn.cursor() as postgres_cursor:
-                try:
-                    while True:
-                        rows = oracle_cursor.fetchmany(20)
-                        if not rows:
-                            break
-                        
-                        extracted_oracle_list = [{col: convert_lob_to_string(row[idx]) for idx, col in enumerate(columns)} for row in rows]
-                        postgres_cursor.executemany(insert_query, extracted_oracle_list)
-                        
-                        update_params = [{'TEST_ID': row[0]} for row in rows]
-                        oracle_update_cursor.executemany(update_query, update_params)
+                while True:
+                    rows = oracle_cursor.fetchmany(200)
+                    if not rows:
+                        break
+                    extracted_oracle_list = [{col: convert_lob_to_string(row[idx]) for idx, col in enumerate(columns)} for row in rows]
 
-                    oracle_conn.commit()
-                    postgres_conn.commit()
-                except Exception as e:
-                    oracle_conn.rollback()
-                    postgres_conn.rollback()
-                    logging.error(f"Operation failed: {e}")
-                    raise e
-                finally:
-                    oracle_cursor.close()
-                    oracle_update_cursor.close()
+                    try:
+                        postgres_cursor.executemany(insert_query, extracted_oracle_list)                    
+                        #update_params = [{'test_id': row[0]} for row in rows]
+                        oracle_update_cursor.executemany(update_query,extracted_oracle_list)
 
+                        postgres_conn.commit()
+                        
+                    except Exception as e:
+                        logging.error(f"Operation failed: {e}")
+                        raise e
+                    connect_oracle().commit()
+                    
         
     extract_sql_query()>>execute()
