@@ -64,38 +64,28 @@ with DAG(
     
     @task(task_id='execute')
     def execute(**kwargs): 
-        ti = kwargs['ti']          
-
-        queries = ti.xcom_pull(task_ids='cleanedQuery')       
+        ti = kwargs['ti']
+        queries = ti.xcom_pull(task_ids='cleanedQuery')
         select_query = queries['select_query']
-        update_query = queries['update_query']     
+        update_query = queries['update_query']
 
-        with closing(connect_oracle().cursor()) as oracle_cursor:
+        with closing(connect_oracle().cursor()) as oracle_cursor, connect_postgres() as postgres_conn:
             oracle_cursor.execute(select_query)
-            columns=[col[0] for col in oracle_cursor.description]
-            extracted_oracle_list =[]
-            postgres_conn=connect_postgres()
-            postgres_cursor=postgres_conn.cursor()
-            try:
-
+            columns = [col[0] for col in oracle_cursor.description]
+            extracted_oracle_list = []
+            with postgres_conn.cursor() as postgres_cursor:
                 while True:
-                    rows = oracle_cursor.fetchmany(100) # 100줄씩 끊어서 작업 
-
-                    if not rows:                     
+                    rows = oracle_cursor.fetchmany(100)
+                    if not rows:
                         break
-                    else:
-                        try:
-                            extracted_oracle_list = [dict(zip(columns, row)) for row in rows]
-                            postgres_cursor.executemany(update_query, extracted_oracle_list)
-                            postgres_conn.commit()  # 트랜잭션 커밋
-                        except Exception as e:
-                            logging.error(f"Update failed: {e}")
-                            return jsonify({"error": str(e)}), 500    
-                        #extracted_oracle_list =[]   #초기화
-                
-            finally:
+                    extracted_oracle_list = [dict(zip(columns, row)) for row in rows]
+                    try:
+                        postgres_cursor.executemany(update_query, extracted_oracle_list)
+                        postgres_conn.commit()
+                    except Exception as e:
+                        logging.error(f"Update failed: {e}")
+                        raise e
                 postgres_conn.commit()
-                postgres_cursor.close()   
         
     extract_select_sql_query()>>execute()
     
