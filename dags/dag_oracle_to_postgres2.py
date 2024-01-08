@@ -15,7 +15,7 @@ import logging
 with DAG(
         dag_id='dag_oracle_to_postgres2',
         start_date=pendulum.datetime(2023, 12, 1, tz='Asia/Seoul'),
-        schedule="*/2 * * * *",
+        schedule="*/10 * * * *",
         catchup=False
 ) as dag:
       
