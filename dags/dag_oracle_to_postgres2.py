@@ -93,8 +93,8 @@ with DAG(
 
                     try:
                         postgres_cursor.executemany(insert_query, extracted_oracle_list)                    
-                        #update_params = [{'test_id': row[0]} for row in rows]
-                        oracle_update_cursor.executemany(update_query,extracted_oracle_list)
+                        update_params = [{'test_id': row[0]} for row in rows]
+                        oracle_update_cursor.executemany(update_query,update_params)
 
                         postgres_conn.commit()
                         
