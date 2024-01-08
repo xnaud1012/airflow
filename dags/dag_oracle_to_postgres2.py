@@ -66,6 +66,7 @@ with DAG(
     def execute(**kwargs): 
         ti = kwargs['ti']
         queries = ti.xcom_pull(task_ids='cleanedQuery')
+        print(queries)
         select_query = queries['select_query']
         update_query = queries['update_query']
         print(update_query)
