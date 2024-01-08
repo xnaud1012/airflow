@@ -79,6 +79,7 @@ with DAG(
                     if not rows:
                         break
                     extracted_oracle_list = [dict(zip(columns, row)) for row in rows]
+                    print(extracted_oracle_list)
                     try:
                         postgres_cursor.executemany(update_query, extracted_oracle_list)
                         postgres_conn.commit()
@@ -88,6 +89,8 @@ with DAG(
                 postgres_conn.commit()
         
     extract_select_sql_query()>>execute()
+
+
     
      
 
