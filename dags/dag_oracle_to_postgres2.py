@@ -59,7 +59,10 @@ with DAG(
         post_con = pg_hook.get_conn()  
         return post_con
 
-
+    def convert_lob_to_string(lob_data):
+        if lob_data is not None and isinstance(lob_data, cx_Oracle.LOB):
+            return lob_data.read()
+        return lob_data
 
     
     @task(task_id='execute')
@@ -83,8 +86,8 @@ with DAG(
                     print(rows)
                     if not rows:
                         break
-                    extracted_oracle_list = [dict(zip(columns, row)) for row in rows]
-                
+                    extracted_oracle_list = [{col: convert_lob_to_string(lob_data=row[idx]) for idx, col in enumerate(columns)} for row in rows ]
+                                    
                     try:
                         postgres_cursor.executemany(update_query, extracted_oracle_list)
                         postgres_conn.commit()
