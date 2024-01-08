@@ -15,7 +15,7 @@ import logging
 with DAG(
         dag_id='dag_oracle_to_postgres2',
         start_date=pendulum.datetime(2023, 12, 1, tz='Asia/Seoul'),
-        schedule="*/10 * * * *",
+        schedule="*/2 * * * *",
         catchup=False
 ) as dag:
       
@@ -31,18 +31,21 @@ with DAG(
     
 
     @task(task_id='cleanedQuery')
-    def extract_select_sql_query(**kwargs):
+    def extract_sql_query(**kwargs):
         ti = kwargs['ti']
         base_path = os.path.dirname(__file__)
 
         select_sql_path = os.path.join(base_path, 'sql/select.sql')
+        insert_sql_path = os.path.join(base_path, 'sql/insert.sql')
         update_sql_path = os.path.join(base_path, 'sql/update.sql')
 
         select_query = clean_sql_query(select_sql_path)
-        update_query = clean_sql_query(update_sql_path)
+        insert_query = clean_sql_query(insert_sql_path)
+        update_query = clean_sql_query(update_sql_path) 
         
 
         ti.xcom_push(key="select_query", value=select_query)
+        ti.xcom_push(key="insert_query", value=insert_query)
         ti.xcom_push(key="update_query", value=update_query)
 
 
@@ -73,34 +76,40 @@ with DAG(
     def execute(**kwargs): 
         ti = kwargs['ti']        
         select_query = ti.xcom_pull(key="select_query", task_ids = 'cleanedQuery')
+        insert_query = ti.xcom_pull(key="insert_query", task_ids = 'cleanedQuery')  
         update_query = ti.xcom_pull(key="update_query", task_ids = 'cleanedQuery')  
-        timeStamp = Variable.get("timeStamp", default_var=str(pendulum.datetime(2024, 1, 1)))
-
-        select_query = select_query.replace(":timeStamp", f"'{timeStamp}'")
-       
 
 
-        with closing(connect_oracle().cursor()) as oracle_cursor, connect_postgres() as postgres_conn:
+        with connect_oracle() as oracle_conn, connect_postgres() as postgres_conn:
+            oracle_cursor = oracle_conn.cursor()
+            oracle_update_cursor = oracle_conn.cursor()
+            
             oracle_cursor.execute(select_query)
             columns = [col[0].lower() for col in oracle_cursor.description]
-            extracted_oracle_list = []
             
-
             with postgres_conn.cursor() as postgres_cursor:
-                while True:
-                    rows = oracle_cursor.fetchmany(100)
-                    print(rows)
-                    if not rows:
-                        break
-                    extracted_oracle_list = [{col: convert_lob_to_string(lob_data=row[idx]) for idx, col in enumerate(columns)} for row in rows ]
-                                    
-                    try:
-                        postgres_cursor.executemany(update_query, extracted_oracle_list)
-                        postgres_conn.commit()
-                    except Exception as e:
-                        logging.error(f"Update failed: {e}")
-                        raise e
-                postgres_conn.commit()
+                try:
+                    while True:
+                        rows = oracle_cursor.fetchmany(100)
+                        if not rows:
+                            break
+                        
+                        extracted_oracle_list = [{col: convert_lob_to_string(row[idx]) for idx, col in enumerate(columns)} for row in rows]
+                        postgres_cursor.executemany(insert_query, extracted_oracle_list)
+                        
+                        update_params = [{'test_id': row[0]} for row in rows] #postgres에 집어넣은 데이터들은 CHK 를 'Y'로 변환 
+                        oracle_update_cursor.executemany(update_query, update_params)
+
+                    oracle_conn.commit()
+                    postgres_conn.commit()
+                except Exception as e:
+                    oracle_conn.rollback()
+                    postgres_conn.rollback()
+                    logging.error(f"Operation failed: {e}")
+                    raise e
+                finally:
+                    oracle_cursor.close()
+                    oracle_update_cursor.close()
 
         
-    extract_select_sql_query()>>execute()
+    extract_sql_query()>>execute()
