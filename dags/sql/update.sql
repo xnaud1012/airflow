@@ -1,2 +1,2 @@
-UPDATE test set CHK='Y' where TEST_ID= %(test_id)s
+UPDATE test set CHK='Y' WHERE TEST_ID = :TEST_ID
 
