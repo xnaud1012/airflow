@@ -68,33 +68,31 @@ with DAG(
         select_query = ti.xcom_pull(key="select_query", task_ids = 'cleanedQuery')
         update_query = ti.xcom_pull(key="update_query", task_ids = 'cleanedQuery')  
        
-        try:
 
-            with closing(connect_oracle().cursor()) as oracle_cursor, connect_postgres() as postgres_conn:
-                oracle_cursor.execute(select_query)
-                columns = [col[0] for col in oracle_cursor.description]
-                extracted_oracle_list = []
+
+        with closing(connect_oracle().cursor()) as oracle_cursor, connect_postgres() as postgres_conn:
+            oracle_cursor.execute(select_query)
+            columns = [col[0] for col in oracle_cursor.description]
+            extracted_oracle_list = []
+            
+            logging.info(columns)
+            logging.error(f"Update failed:*******************************1")
+            with postgres_conn.cursor() as postgres_cursor:
+                while True:
+                    rows = oracle_cursor.fetchmany(100)
+                    print(rows)
+                    if not rows:
+                        break
+                    extracted_oracle_list = [dict(zip(columns, row)) for row in rows]
                 
-                logging.info(columns)
-                logging.error(f"Update failed:*******************************1")
-                with postgres_conn.cursor() as postgres_cursor:
-                    while True:
-                        rows = oracle_cursor.fetchmany(100)
-                        logging.info("fatchmany------------------------------2")
-                        logging.error(f"Update failed:*******************************2")
-                        if not rows:
-                            break
-                        extracted_oracle_list = [dict(zip(columns, row)) for row in rows]
-                    
-                        try:
-                            postgres_cursor.executemany(update_query, extracted_oracle_list)
-                            postgres_conn.commit()
-                        except Exception as e:
-                            logging.error(f"Update failed: {e}")
-                            raise e
-                    postgres_conn.commit()
-        except Exception as e:
-            return update_query
+                    try:
+                        postgres_cursor.executemany(update_query, extracted_oracle_list)
+                        postgres_conn.commit()
+                    except Exception as e:
+                        logging.error(f"Update failed: {e}")
+                        raise e
+                postgres_conn.commit()
+
         
     extract_select_sql_query()>>execute()
 
