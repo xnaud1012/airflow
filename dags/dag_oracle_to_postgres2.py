@@ -68,11 +68,13 @@ with DAG(
         queries = ti.xcom_pull(task_ids='cleanedQuery')
         select_query = queries['select_query']
         update_query = queries['update_query']
+        print(update_query)
 
         with closing(connect_oracle().cursor()) as oracle_cursor, connect_postgres() as postgres_conn:
             oracle_cursor.execute(select_query)
             columns = [col[0] for col in oracle_cursor.description]
             extracted_oracle_list = []
+            print(columns)
             with postgres_conn.cursor() as postgres_cursor:
                 while True:
                     rows = oracle_cursor.fetchmany(100)
