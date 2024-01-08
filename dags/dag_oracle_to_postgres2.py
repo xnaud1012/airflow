@@ -99,8 +99,9 @@ with DAG(
                         postgres_conn.commit()
                         
                     except Exception as e:
+                        connect_oracle().rollback()  # Oracle 트랜잭션 롤백
+                        postgres_conn.rollback()  # PostgreSQL 트랜잭션 롤백
                         logging.error(f"Operation failed: {e}")
-                        raise e
                     connect_oracle().commit()
                     
         
