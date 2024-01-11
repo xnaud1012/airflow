@@ -99,14 +99,26 @@ with DAG(
                 columns = [col[0].lower() for col in ms_select_cursor.description] #select결과 가져오기   
                 # 첫 번째 행을 가져옵니다.
                 first_row = ms_select_cursor.fetchone() #맨 위 top 1한 행
-                print(first_row) 
-            with connect_oracle() as oracle_conn:  # Oracle 연결
-                with oracle_conn.cursor() as oracle_cursor:
-
-                    if first_row:               
+            if first_row:    
+                    with connect_oracle() as oracle_create_conn:
+                        with connect_oracle().cursor() as oracle_create_cursor:
                             try:
+                                oracle_create_cursor.execute(create_query)     # 데이터가 존재하지 않으면 테이블 생       
+
+                            except Exception as e: 
+                                print('create failed')  
+                            finally:
+                                oracle_create_conn.commit()                    
+                                    
+
+                      
+            
+              
+                    with connect_oracle() as oracle_conn:  # Oracle 연결
+                        with connect_oracle().cursor() as oracle_cursor:
+                            try:                
                                 # 첫 번째 행 처리
-                                oracle_cursor.execute(create_query)     # 데이터가 존재하지 않으면 테이블 생
+
                                 extracted_row = {col: convert_mssql_lob_to_string(first_row[idx]) for idx, col in enumerate(columns)}
                                 oracle_cursor.execute(insert_query, extracted_row)
 
