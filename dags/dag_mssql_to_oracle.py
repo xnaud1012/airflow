@@ -87,13 +87,15 @@ with DAG(
         insert_query = ti.xcom_pull(key="insert_query", task_ids = 'cleanedQuery') #oracle로 insert 
 
         columns=[];
+        insert_query+="/"
+        print(insert_query)
         print('in*****************************************************')
 
         with connect_ms() as ms_conn: #select용 connect열기
             with ms_conn.cursor() as ms_select_cursor:
                 ms_select_cursor.execute(select_query)
                 columns = [col[0].lower() for col in ms_select_cursor.description] #select결과 가져오기         
-                print(columns)        
+   
 
                 while True:
                     rows = ms_select_cursor.fetchmany(100) # n 개씩 끊어서 작업
@@ -104,7 +106,7 @@ with DAG(
                         with oracle_conn.cursor() as oracle_cursor:
                             try:
                                 extracted_ms_list = [{col: convert_mssql_lob_to_string(row[idx]) for idx, col in enumerate(columns)} for row in rows]
-                                print(extracted_ms_list )
+                
                                 oracle_cursor.executemany(insert_query, extracted_ms_list)                                           
                                 
                             except Exception as e:                            
