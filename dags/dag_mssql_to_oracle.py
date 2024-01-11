@@ -48,12 +48,15 @@ with DAG(
 
         select_sql_path = os.path.join(base_path, 'sql/ms_select.sql')
         insert_sql_path = os.path.join(base_path, 'sql/ms_insert_pl.sql')
+        create_sql_path = os.path.join(base_path, 'sql/ms_create_pl.sql')
 
         select_query = clean_sql_query(select_sql_path)
         insert_query = clean_sql_query(insert_sql_path)        
+        create_query = clean_sql_query(create_sql_path)  
 
         ti.xcom_push(key="select_query", value=select_query)
         ti.xcom_push(key="insert_query", value=insert_query)
+        ti.xcom_push(key="create_query", value=create_query)
 
 
 
@@ -85,22 +88,22 @@ with DAG(
         ti = kwargs['ti']        
         select_query = ti.xcom_pull(key="select_query", task_ids = 'cleanedQuery') #ms에서 select
         insert_query = ti.xcom_pull(key="insert_query", task_ids = 'cleanedQuery') #oracle로 insert 
+        create_query = ti.xcom_pull(key="create_query", task_ids = 'cleanedQuery') #oracle에 table이 있는지 체크 
 
         columns=[];
-        insert_query+="/"
-        print(insert_query)
-        print('in*****************************************************')
+     
 
         with connect_ms() as ms_conn: #select용 connect열기
-            with ms_conn.cursor() as ms_select_cursor:
+            with connect_ms().cursor() as ms_select_cursor:
                 ms_select_cursor.execute(select_query)
-                columns = [col[0].lower() for col in ms_select_cursor.description] #select결과 가져오기         
-   
+                columns = [col[0].lower() for col in ms_select_cursor.description] #select결과 가져오기      
 
                 while True:
                     rows = ms_select_cursor.fetchmany(100) # n 개씩 끊어서 작업
                     if not rows:
                         break
+                    oracle_hook = OracleHook(oracle_conn_id='oracle_default')
+                    oracle_hook.run(create_query)
 
                     with connect_oracle() as oracle_conn: # POSTGRES와 ORACLE UPDATE를 위한 연결
                         with oracle_conn.cursor() as oracle_cursor:
