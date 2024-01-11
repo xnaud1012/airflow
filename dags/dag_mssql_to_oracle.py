@@ -95,10 +95,10 @@ with DAG(
 
         with connect_ms() as ms_conn: #select용 connect열기
             with connect_ms().cursor() as ms_select_cursor:
-                ms_select_cursor.execute(select_query)
+                ms_select_cursor.execute(select_query) # 정렬은 이 때 한번만 이루어져서 top 1 이후 fetch를 실행하더라도 재정렬이 이루어지진 않는다. 
                 columns = [col[0].lower() for col in ms_select_cursor.description] #select결과 가져오기   
                 # 첫 번째 행을 가져옵니다.
-                first_row = ms_select_cursor.fetchone()
+                first_row = ms_select_cursor.fetchone() #맨 위 top 1한 행 
 
                 if first_row:
                     # 데이터가 존재하면 테이블 생성 및 데이터 삽입
