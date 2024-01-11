@@ -16,7 +16,7 @@ from airflow.providers.oracle.hooks.oracle import OracleHook
 import logging
 
 with DAG(
-        dag_id='dag_mssql_to_oracle_backup',
+        dag_id='dag_mssql_to_oracle_V2',
         start_date=pendulum.datetime(2024, 01, 1, tz='Asia/Seoul'),
         schedule="*/10 * * * *",
         catchup=False
