@@ -108,12 +108,7 @@ with DAG(
                             except Exception as e: 
                                 print('create failed')  
                             finally:
-                                oracle_create_conn.commit()                    
-                                    
-
-                      
-            
-              
+                                oracle_create_conn.commit()                 
                     with connect_oracle() as oracle_conn:  # Oracle 연결
                         with connect_oracle().cursor() as oracle_cursor:
                             try:                
@@ -134,8 +129,8 @@ with DAG(
                                 oracle_conn.rollback()                                    
                             finally:
                                 oracle_conn.commit()
-                    else:
-                        print("반환된 데이터가 없습니다.")
+            else:
+                print("반환된 데이터가 없습니다.")
 
                     
         
