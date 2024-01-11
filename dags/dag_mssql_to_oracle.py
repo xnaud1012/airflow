@@ -97,31 +97,36 @@ with DAG(
             with connect_ms().cursor() as ms_select_cursor:
                 ms_select_cursor.execute(select_query)
                 columns = [col[0].lower() for col in ms_select_cursor.description] #select결과 가져오기   
-                if ms_select_cursor.rowcount >0:
+                # 첫 번째 행을 가져옵니다.
+                first_row = ms_select_cursor.fetchone()
+
+                if first_row:
+                    # 데이터가 존재하면 테이블 생성 및 데이터 삽입
                     oracle_hook = OracleHook(oracle_conn_id='oracle_default')
-                    oracle_hook.run(create_query)
+                    oracle_hook.run(create_query)  # 테이블 생성
 
+                    with connect_oracle() as oracle_conn:  # Oracle 연결
+                        with oracle_conn.cursor() as oracle_cursor:
+                            try:
+                                # 첫 번째 행 처리
+                                extracted_row = {col: convert_mssql_lob_to_string(first_row[idx]) for idx, col in enumerate(columns)}
+                                oracle_cursor.execute(insert_query, extracted_row)
 
-                    while True:
-                        rows = ms_select_cursor.fetchmany(100) # n 개씩 끊어서 작업
-                        if not rows:
-                            break
+                                # 이후 행들 처리
+                                while True:
+                                    rows = ms_select_cursor.fetchmany(100)
+                                    if not rows:
+                                        break
 
-
-                        with connect_oracle() as oracle_conn: # POSTGRES와 ORACLE UPDATE를 위한 연결
-                            with oracle_conn.cursor() as oracle_cursor:
-                                try:
                                     extracted_ms_list = [{col: convert_mssql_lob_to_string(row[idx]) for idx, col in enumerate(columns)} for row in rows]
-                    
                                     oracle_cursor.executemany(insert_query, extracted_ms_list)                                           
-                                    
-                                except Exception as e:                            
-                                    oracle_conn.rollback()                                    
-                                
-                                finally: #성공하면 commit 한다.                          
-                                    oracle_conn.commit()
+                            except Exception as e:                            
+                                oracle_conn.rollback()                                    
+                            finally:
+                                oracle_conn.commit()
                 else:
-                    raise Exception("No rows returned")
+                    print("반환된 데이터가 없습니다.")
+
                     
         
     extract_sql_query()>>execute()
