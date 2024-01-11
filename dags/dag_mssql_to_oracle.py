@@ -2,6 +2,7 @@ import cx_Oracle
 from contextlib import closing
 
 from airflow.providers.microsoft.mssql.hooks.mssql import MsSqlHook
+from airflow.providers.oracle.hooks.oracle import OracleHook
 import pandas as pd
 from airflow.models import Variable
 import os
@@ -11,12 +12,12 @@ import pendulum
 from airflow.decorators import task
 from airflow import DAG
 from flask import jsonify
-from airflow.providers.postgres.hooks.postgres import PostgresHook
-from airflow.providers.oracle.hooks.oracle import OracleHook
+
+
 import logging
 
 with DAG(
-        dag_id='dag_mssql_to_oracle_backup',
+        dag_id='dag_mssql_to_oracle',
         start_date=pendulum.datetime(2024, 01, 1, tz='Asia/Seoul'),
         schedule="*/10 * * * *",
         catchup=False
@@ -61,10 +62,10 @@ with DAG(
                             encoding="UTF-8")
         return ora_con
     
-    def connect_postgres():
-        pg_hook = PostgresHook('conn-db-postgres-custom') 
-        post_con = pg_hook.get_conn()  
-        return post_con
+    def connect_mssql():
+        ms_hook = MsSqlHook('conn-db-postgres-custom') 
+        ms_conn = ms_hook.get_conn()  
+        return ms_conn
 
     def convert_lob_to_string(lob_data):
         if lob_data is not None and isinstance(lob_data, cx_Oracle.LOB):
@@ -82,8 +83,10 @@ with DAG(
         insert_query = ti.xcom_pull(key="insert_query", task_ids = 'cleanedQuery')  
         update_query = ti.xcom_pull(key="update_query", task_ids = 'cleanedQuery')  
 
+        
 
-        with connect_oracle() as oracle_conn, connect_postgres() as postgres_conn:
+
+        with connect_oracle() as oracle_conn, connect_mssql() as postgres_conn:
             oracle_cursor = oracle_conn.cursor()
             oracle_update_cursor = oracle_conn.cursor()
             
@@ -102,7 +105,7 @@ with DAG(
                         
                         update_params = [{'test_id': item['test_id']} for item in extracted_oracle_list]
                         oracle_update_cursor.executemany(update_query, update_params)
-                    oracle_conn.commit()
+                    
                     postgres_conn.commit()
                 except Exception as e:
                     oracle_conn.rollback()

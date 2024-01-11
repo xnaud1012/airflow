@@ -78,37 +78,39 @@ with DAG(
         select_query = ti.xcom_pull(key="select_query", task_ids = 'cleanedQuery')
         insert_query = ti.xcom_pull(key="insert_query", task_ids = 'cleanedQuery')  
         update_query = ti.xcom_pull(key="update_query", task_ids = 'cleanedQuery')  
+        columns=[];
 
+        with connect_oracle() as oracle_conn: #select용 connect열기
+            with oracle_conn.cursor() as oracle_select_cursor:
+                oracle_select_cursor.execute(select_query)
+                columns = [col[0].lower() for col in oracle_select_cursor.description] #select결과 가져오기                 
 
-        with connect_oracle() as oracle_conn, connect_postgres() as postgres_conn:
-            oracle_cursor = oracle_conn.cursor()
-            oracle_update_cursor = oracle_conn.cursor()
-            
-            oracle_cursor.execute(select_query)
-            columns = [col[0].lower() for col in oracle_cursor.description]
-            
-            with postgres_conn.cursor() as postgres_cursor:
-                try:
-                    while True:
-                        rows = oracle_cursor.fetchmany(100)
-                        if not rows:
-                            break
-                        
-                        extracted_oracle_list = [{col: convert_lob_to_string(row[idx]) for idx, col in enumerate(columns)} for row in rows]
-                        postgres_cursor.executemany(insert_query, extracted_oracle_list)
-                        
-                        update_params = [{'test_id': item['test_id']} for item in extracted_oracle_list]
-                        oracle_update_cursor.executemany(update_query, update_params)
-                    oracle_conn.commit()
-                    postgres_conn.commit()
-                except Exception as e:
-                    oracle_conn.rollback()
-                    postgres_conn.rollback()
-                    logging.error(f"Operation failed: {e}")
-                    raise e
-                finally:
-                    oracle_cursor.close()
-                    oracle_update_cursor.close()
+                while True:
+                    rows = oracle_select_cursor.fetchmany(10000) # 10000 개씩 끊어서 작업
+                    if not rows:
+                        break
+
+                    with connect_postgres() as postgres_conn, connect_oracle() as oracle_update_conn: # POSTGRES와 ORACLE UPDATE를 위한 연결
+                        with postgres_conn.cursor() as postgres_cursor, oracle_update_conn.cursor() as oracle_update_cursor:
+                            try:
+                                extracted_oracle_list = [{col: convert_lob_to_string(row[idx]) for idx, col in enumerate(columns)} for row in rows]
+                                postgres_cursor.executemany(insert_query, extracted_oracle_list)
+                                
+                                # 동시에 ORACLE 업데이트 한 행 체크 / postgres로 데이터 이관 성공하면 > oracle에서 이관한 데이터 update 체크
+                                update_params = [{'test_id': item['test_id']} for item in extracted_oracle_list]
+                                oracle_update_cursor.executemany(update_query, update_params)        
+                                
+                            except Exception as e:
+                                postgres_conn.rollback()
+                                oracle_update_conn.rollback()                                    
+                            
+                            finally: #성공하면 commit 한다.
+                                postgres_conn.commit()
+                                oracle_update_conn.commit()
+
+        
+        
+
                     
         
     extract_sql_query()>>execute()
