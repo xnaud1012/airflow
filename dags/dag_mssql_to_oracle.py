@@ -97,7 +97,7 @@ with DAG(
                             oracle_hook = OracleHook(oracle_conn_id="oracle_default")  #  # 데이터가 존재하지 않으면 테이블 생성
                             try:
                                 
-                                oracle_hook.run(create_query)
+                                oracle_hook.run(select_query)
        
 
                             except Exception as e:
