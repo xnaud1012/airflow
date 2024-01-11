@@ -99,8 +99,9 @@ with DAG(
                                 oracle_hook.run(create_query)
        
 
-                            except Exception as e: 
-                                print('create failed')  
+                            except Exception as e:
+                                logging.error(f'Create table failed: {e}')
+                                raise  
                             finally:
                                 oracle_create_conn.commit()                 
                     with connect_oracle() as oracle_conn:  # Oracle 연결
