@@ -96,27 +96,32 @@ with DAG(
         with connect_ms() as ms_conn: #select용 connect열기
             with connect_ms().cursor() as ms_select_cursor:
                 ms_select_cursor.execute(select_query)
-                columns = [col[0].lower() for col in ms_select_cursor.description] #select결과 가져오기      
-
-                while True:
-                    rows = ms_select_cursor.fetchmany(100) # n 개씩 끊어서 작업
-                    if not rows:
-                        break
+                columns = [col[0].lower() for col in ms_select_cursor.description] #select결과 가져오기   
+                if ms_select_cursor.rowcount >0:
                     oracle_hook = OracleHook(oracle_conn_id='oracle_default')
                     oracle_hook.run(create_query)
 
-                    with connect_oracle() as oracle_conn: # POSTGRES와 ORACLE UPDATE를 위한 연결
-                        with oracle_conn.cursor() as oracle_cursor:
-                            try:
-                                extracted_ms_list = [{col: convert_mssql_lob_to_string(row[idx]) for idx, col in enumerate(columns)} for row in rows]
-                
-                                oracle_cursor.executemany(insert_query, extracted_ms_list)                                           
+
+                    while True:
+                        rows = ms_select_cursor.fetchmany(100) # n 개씩 끊어서 작업
+                        if not rows:
+                            break
+
+
+                        with connect_oracle() as oracle_conn: # POSTGRES와 ORACLE UPDATE를 위한 연결
+                            with oracle_conn.cursor() as oracle_cursor:
+                                try:
+                                    extracted_ms_list = [{col: convert_mssql_lob_to_string(row[idx]) for idx, col in enumerate(columns)} for row in rows]
+                    
+                                    oracle_cursor.executemany(insert_query, extracted_ms_list)                                           
+                                    
+                                except Exception as e:                            
+                                    oracle_conn.rollback()                                    
                                 
-                            except Exception as e:                            
-                                oracle_conn.rollback()                                    
-                            
-                            finally: #성공하면 commit 한다.                          
-                                oracle_conn.commit()
-                
+                                finally: #성공하면 commit 한다.                          
+                                    oracle_conn.commit()
+                else:
+                    raise Exception("No rows returned")
+                    
         
     extract_sql_query()>>execute()
