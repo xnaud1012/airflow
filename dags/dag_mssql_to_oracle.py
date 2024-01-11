@@ -94,8 +94,9 @@ with DAG(
             if first_row:    
                     with connect_oracle() as oracle_create_conn:
                         with connect_oracle().cursor() as oracle_create_cursor:
+                            oracle_hook = OracleHook(oracle_conn_id="oracle_default")  #  # 데이터가 존재하지 않으면 테이블 생성
                             try:
-                                oracle_hook = OracleHook(oracle_conn_id="oracle_default")  #  # 데이터가 존재하지 않으면 테이블 생성
+                                
                                 oracle_hook.run(create_query)
        
 
