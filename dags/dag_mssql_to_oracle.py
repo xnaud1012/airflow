@@ -89,20 +89,15 @@ with DAG(
                 columns = [col[0].lower() for col in ms_select_cursor.description] #select결과 가져오기   
                 # 첫 번째 행을 가져옵니다.
                 first_row = ms_select_cursor.fetchone() #맨 위 top 1한 행
-            if first_row:    
+                
+                if first_row:    
                     with connect_oracle() as oracle_create_conn:
                         with connect_oracle().cursor() as oracle_create_cursor:
-                            oracle_hook = OracleHook(oracle_conn_id="conn_oracle_custom")  #  # 데이터가 존재하지 않으면 테이블 생성
-                            print(oracle_hook)
-                            print('********************************************************************')
                             try:
-                                
-                                oracle_hook.run(create_query)
-       
+                                oracle_create_cursor.execute(create_query)     # 데이터가 존재하지 않으면 테이블 생       
 
-                            except Exception as e:
-                                logging.error(f'Create table failed: {e}')
-                                raise  
+                            except Exception as e: 
+                                print('create failed')  
                             finally:
                                 oracle_create_conn.commit()                 
                     with connect_oracle() as oracle_conn:  # Oracle 연결
