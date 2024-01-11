@@ -80,19 +80,22 @@ with DAG(
                 columns = [col[0].lower() for col in ms_select_cursor.description]
                 first_row = ms_select_cursor.fetchone()
 
-                if first_row: # ETL할 row가 존재할 떄만 로직 드걔쟤 /앗차 여기가 아니라규~~~!!//ㅇㅇ옮김
-                    # 오라클 테이블  존재하는 지 체크하고 최초 생성(table exists check)
+                if first_row: # ETL할 row가 존재할 떄만 로직 드갸쟈 /앗차 여기가 아니라구~~~!!//옮김
+                    # 오라클 시작
                     with connect_oracle() as oracle_conn:
-                        with oracle_conn.cursor() as oracle_cursor:                          
-                               
-                            oracle_cursor.execute(create_query) # exec폼미쳣다 
-                            oracle_conn.commit()
-                            try:  
+                        with oracle_conn.cursor() as oracle_cursor:
+                            try:
+                                # Create table if not exists
+                                oracle_cursor.execute(create_query)
+                                oracle_conn.commit()
+
+                                # Insert first row
                                 extracted_row = {col: convert_mssql_lob_to_string(first_row[idx]) for idx, col in enumerate(columns)}
-                                oracle_cursor.execute(insert_query, extracted_row) 
-              
+                                oracle_cursor.execute(insert_query, extracted_row)
+
+                                # Insert subsequent rows
                                 while True:
-                                    rows = ms_select_cursor.fetchmany(100) #대규모 데이터 용량 
+                                    rows = ms_select_cursor.fetchmany(100)
                                     if not rows:
                                         break
                                     extracted_ms_list = [{col: convert_mssql_lob_to_string(row[idx]) for idx, col in enumerate(columns)} for row in rows]
@@ -105,6 +108,6 @@ with DAG(
                                 oracle_conn.rollback()
                                 raise
                 else:
-                    logging.info("ETL할 MSSQL데이터가 없습니다.")
+                    logging.info("No data returned from MS SQL Server.")
 
-    extract_sql_query
+    extract_sql_query() >> execute()
