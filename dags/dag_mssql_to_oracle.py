@@ -27,18 +27,6 @@ with DAG(
             query = re.sub(r'[\t\s]*,[\t\s]*', ', ', query)
             query = re.sub(r'[\t\s]*from[\t\s]*', ' FROM ', query, flags=re.IGNORECASE)
             query = re.sub(r'[\t\s]*where[\t\s]*', ' WHERE ', query, flags=re.IGNORECASE)
-            # PL/SQL용 특정 키워드 처리 추가함
-            query = re.sub(r'[\t\s]*:[\t\s]*', ' :', query, flags=re.IGNORECASE)
-            query = re.sub(r'[\t\s]*begin[\t\s]*', 'BEGIN ', query, flags=re.IGNORECASE)
-            query = re.sub(r'[\t\s]*if[\t\s]*', 'IF ', query, flags=re.IGNORECASE)
-            query = re.sub(r'[\t\s]*insert[\t\s]*', ' INSERT ', query, flags=re.IGNORECASE)
-            query = re.sub(r'[\t\s]*into[\t\s]*', ' INTO ', query, flags=re.IGNORECASE)
-            query = re.sub(r'[\t\s]*end[\t\s]*;', 'END;', query, flags=re.IGNORECASE)
-            query = re.sub(r'[\t\s]*create[\t\s]*', 'CREATE ', query, flags=re.IGNORECASE)
-            query = re.sub(r'[\t\s]*table[\t\s]*', 'TABLE ', query, flags=re.IGNORECASE)
-            query = re.sub(r'[\t\s]*declare[\t\s]*', 'DECLARE ', query, flags=re.IGNORECASE)
-            # EXECUTE IMMEDIATE 키워드 처리
-            query = re.sub(r'[\t\s]*execute[\t\s]+immediate[\t\s]*', ' EXECUTE IMMEDIATE ', query, flags=re.IGNORECASE)
 
         return query
     
