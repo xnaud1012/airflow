@@ -120,8 +120,8 @@ with DAG(
                                 oracle_conn.rollback()                                    
                             finally:
                                 oracle_conn.commit()
-            else:
-                print("반환된 데이터가 없습니다.")
+                else:
+                    print("반환된 데이터가 없습니다.")
 
                     
         
