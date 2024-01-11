@@ -87,6 +87,7 @@ with DAG(
         insert_query = ti.xcom_pull(key="insert_query", task_ids = 'cleanedQuery') #oracle로 insert 
 
         columns=[];
+        print('in*****************************************************')
 
         with connect_ms() as ms_conn: #select용 connect열기
             with ms_conn.cursor() as ms_select_cursor:
