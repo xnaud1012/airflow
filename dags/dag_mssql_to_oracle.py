@@ -14,7 +14,7 @@ import logging
 
 with DAG(
         dag_id='dag_mssql_to_oracle',
-        start_date=pendulum.datetime(2023, 12, 1, tz='Asia/Seoul'),
+        start_date=pendulum.datetime(2024, 1, 1, tz='Asia/Seoul'),
         schedule="*/2 * * * *",
         catchup=False
 ) as dag:
@@ -47,7 +47,7 @@ with DAG(
         base_path = os.path.dirname(__file__)
 
         select_sql_path = os.path.join(base_path, 'sql/ms_select.sql')
-        insert_sql_path = os.path.join(base_path, 'sql/ms_insert.sql')
+        insert_sql_path = os.path.join(base_path, 'sql/ms_insert_pl.sql')
 
         select_query = clean_sql_query(select_sql_path)
         insert_query = clean_sql_query(insert_sql_path)        
