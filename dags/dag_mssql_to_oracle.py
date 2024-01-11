@@ -106,7 +106,7 @@ with DAG(
                     if first_row:               
                             try:
                                 # 첫 번째 행 처리
-                                oracle_cursor.execute(create_query)     # 데이터가 존재하지 않으면 테이블 생성 
+                                oracle_cursor.execute(create_query)     # 데이터가 존재하지 않으면 테이블 생
                                 extracted_row = {col: convert_mssql_lob_to_string(first_row[idx]) for idx, col in enumerate(columns)}
                                 oracle_cursor.execute(insert_query, extracted_row)
 
@@ -122,8 +122,8 @@ with DAG(
                                 oracle_conn.rollback()                                    
                             finally:
                                 oracle_conn.commit()
-                else:
-                    print("반환된 데이터가 없습니다.")
+                    else:
+                        print("반환된 데이터가 없습니다.")
 
                     
         
