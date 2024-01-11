@@ -98,17 +98,15 @@ with DAG(
                 ms_select_cursor.execute(select_query) # 정렬은 이 때 한번만 이루어져서 top 1 이후 fetch를 실행하더라도 재정렬이 이루어지진 않는다. 
                 columns = [col[0].lower() for col in ms_select_cursor.description] #select결과 가져오기   
                 # 첫 번째 행을 가져옵니다.
-                first_row = ms_select_cursor.fetchone() #맨 위 top 1한 행 
+                first_row = ms_select_cursor.fetchone() #맨 위 top 1한 행
+                print(first_row) 
+            with connect_oracle() as oracle_conn:  # Oracle 연결
+                with oracle_conn.cursor() as oracle_cursor:
 
-                if first_row:
-                    # 데이터가 존재하면 테이블 생성 및 데이터 삽입
-                    oracle_hook = OracleHook(oracle_conn_id='oracle_default')
-                    oracle_hook.run(create_query)  # 테이블 생성
-
-                    with connect_oracle() as oracle_conn:  # Oracle 연결
-                        with oracle_conn.cursor() as oracle_cursor:
+                    if first_row:               
                             try:
                                 # 첫 번째 행 처리
+                                oracle_cursor.execute(create_query)     # 데이터가 존재하지 않으면 테이블 생성 
                                 extracted_row = {col: convert_mssql_lob_to_string(first_row[idx]) for idx, col in enumerate(columns)}
                                 oracle_cursor.execute(insert_query, extracted_row)
 
