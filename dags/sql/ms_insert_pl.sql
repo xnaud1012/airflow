@@ -18,6 +18,7 @@ BEGIN
                                       visit_detail_id NUMBER, measurement_source_value VARCHAR2(50),measurement_source_concept_id NUMBER,unit_source_value VARCHAR2(50),
                                       value_source_value VARCHAR2(50));
     END IF;
+    COMMIT;
 
     -- 데이터 삽입
 
