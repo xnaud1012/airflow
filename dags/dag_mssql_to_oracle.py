@@ -58,7 +58,7 @@ with DAG(
 
 
     def connect_oracle():
-        rdb = OracleHook('conn-db-oracle-custom')
+        rdb = BaseHook.get_conn('conn-db-oracle-custom')
         ora_con = cx_Oracle.connect(dsn=rdb.extra_dejson.get("dsn"),
                             user=rdb.login,
                             password=rdb.password,
