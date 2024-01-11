@@ -104,6 +104,7 @@ with DAG(
                         with oracle_conn.cursor() as oracle_cursor:
                             try:
                                 extracted_ms_list = [{col: convert_mssql_lob_to_string(row[idx]) for idx, col in enumerate(columns)} for row in rows]
+                                print(extracted_ms_list )
                                 oracle_cursor.executemany(insert_query, extracted_ms_list)                                           
                                 
                             except Exception as e:                            
