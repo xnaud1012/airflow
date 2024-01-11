@@ -1,6 +1,4 @@
 
-    -- 데이터 삽입
-
      INSERT INTO MEASUREMENT (
         measurement_id, person_id, measurement_concept_id, measurement_date,
         measurement_datetime, measurement_time, measurement_type_concept_id,

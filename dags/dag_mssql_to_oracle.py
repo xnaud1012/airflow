@@ -3,33 +3,32 @@ import pandas as pd
 from airflow.models import Variable
 import os
 import re
-from airflow.hooks.base import BaseHook 
+from airflow.hooks.base import BaseHook
 import pendulum
 from airflow.decorators import task
 from airflow import DAG
 from flask import jsonify
 from airflow.providers.microsoft.mssql.hooks.mssql import MsSqlHook
-from airflow.providers.oracle.hooks.oracle import OracleHook
+
 import logging
 
 with DAG(
-        dag_id='dag_mssql_to_oracle',
-        start_date=pendulum.datetime(2024, 1, 1, tz='Asia/Seoul'),
-        schedule="*/2 * * * *",
-        catchup=False
+    dag_id='dag_mssql_to_oracle',
+    start_date=pendulum.datetime(2024, 1, 1, tz='Asia/Seoul'),
+    schedule="*/2 * * * *",
+    catchup=False
 ) as dag:
-      
+
     def clean_sql_query(file_path):
         with open(file_path, 'r') as file:
             query = file.read()
 
-            query = re.sub(r'[\t\s]+', ' ', query)
-            query = re.sub(r'[\t\s]*,[\t\s]*', ', ', query)
-            query = re.sub(r'[\t\s]*from[\t\s]*', ' FROM ', query, flags=re.IGNORECASE)
-            query = re.sub(r'[\t\s]*where[\t\s]*', ' WHERE ', query, flags=re.IGNORECASE)
+        query = re.sub(r'[\t\s]+', ' ', query)
+        query = re.sub(r'[\t\s]*,[\t\s]*', ', ', query)
+        query = re.sub(r'[\t\s]*from[\t\s]*', ' FROM ', query, flags=re.IGNORECASE)
+        query = re.sub(r'[\t\s]*where[\t\s]*', ' WHERE ', query, flags=re.IGNORECASE)
 
         return query
-    
 
     @task(task_id='cleanedQuery')
     def extract_sql_query(**kwargs):
@@ -41,88 +40,71 @@ with DAG(
         create_sql_path = os.path.join(base_path, 'sql/ms_create_pl.sql')
 
         select_query = clean_sql_query(select_sql_path)
-        insert_query = clean_sql_query(insert_sql_path)        
-        create_query = clean_sql_query(create_sql_path)  
+        insert_query = clean_sql_query(insert_sql_path)
+        create_query = clean_sql_query(create_sql_path)
 
         ti.xcom_push(key="select_query", value=select_query)
         ti.xcom_push(key="insert_query", value=insert_query)
         ti.xcom_push(key="create_query", value=create_query)
 
-
-
     def connect_oracle():
         rdb = BaseHook.get_connection('conn-db-oracle-custom')
         ora_con = cx_Oracle.connect(dsn=rdb.extra_dejson.get("dsn"),
-                            user=rdb.login,
-                            password=rdb.password,
-                            encoding="UTF-8")
+                                    user=rdb.login,
+                                    password=rdb.password,
+                                    encoding="UTF-8")
         return ora_con
-    
+
     def connect_ms():
-        ms_hook = MsSqlHook('mssql_default') 
-        ms_conn = ms_hook.get_conn()  
+        ms_hook = MsSqlHook('mssql_default')
+        ms_conn = ms_hook.get_conn()
         return ms_conn
 
-    def convert_mssql_lob_to_string(lob_data): #전처리 구간 
-   
-        #if lob_data is not None and isinstance(lob_data, (bytes, bytearray)):
-        #    return lob_data.decode('utf-8')  # 바이너리 데이터를 문자열로 변환
-        return lob_data
-    
+    def convert_mssql_lob_to_string(lob_data):
+        return lob_data if lob_data else ""
+
     def set_last_run_time():
         Variable.set("timeStamp", pendulum.now('Asia/Seoul').to_datetime_string())
 
-    
     @task(task_id='execute')
-    def execute(**kwargs): 
-        ti = kwargs['ti']        
-        select_query = ti.xcom_pull(key="select_query", task_ids = 'cleanedQuery') #ms에서 select
-        insert_query = ti.xcom_pull(key="insert_query", task_ids = 'cleanedQuery') #oracle로 insert 
-        create_query = ti.xcom_pull(key="create_query", task_ids = 'cleanedQuery') #oracle에 table이 있는지 체크 
+    def execute(**kwargs):
+        ti = kwargs['ti']
+        select_query = ti.xcom_pull(key="select_query", task_ids='cleanedQuery')
+        insert_query = ti.xcom_pull(key="insert_query", task_ids='cleanedQuery')
+        create_query = ti.xcom_pull(key="create_query", task_ids='cleanedQuery')
 
-        columns=[];
-     
+        # Connect to MS SQL Server
+        with connect_ms() as ms_conn:
+            with ms_conn.cursor() as ms_select_cursor:
+                ms_select_cursor.execute(select_query)
+                columns = [col[0].lower() for col in ms_select_cursor.description]
+                first_row = ms_select_cursor.fetchone()
 
-        with connect_ms() as ms_conn: #select용 connect열기
-            with connect_ms().cursor() as ms_select_cursor:
-                ms_select_cursor.execute(select_query) # 정렬은 이 때 한번만 이루어져서 top 1 이후 fetch를 실행하더라도 재정렬이 이루어지진 않는다. 
-                columns = [col[0].lower() for col in ms_select_cursor.description] #select결과 가져오기   
-                # 첫 번째 행을 가져옵니다.
-                first_row = ms_select_cursor.fetchone() #맨 위 top 1한 행
-                
-                if first_row:    
-                    with connect_oracle() as oracle_create_conn:
-                        with connect_oracle().cursor() as oracle_create_cursor:
-                            try:
-                                oracle_create_cursor.execute(create_query)     # 데이터가 존재하지 않으면 테이블 생       
-
-                            except Exception as e: 
-                                print('create failed')  
-                            finally:
-                                oracle_create_conn.commit()                 
-                    with connect_oracle() as oracle_conn:  # Oracle 연결
-                        with connect_oracle().cursor() as oracle_cursor:
-                            try:                
-                                # 첫 번째 행 처리
-
+                if first_row: # ETL할 row가 존재할 떄만 로직 드걔쟤 /앗차 여기가 아니라규~~~!!//ㅇㅇ옮김
+                    # 오라클 테이블  존재하는 지 체크하고 최초 생성(table exists check)
+                    with connect_oracle() as oracle_conn:
+                        with oracle_conn.cursor() as oracle_cursor:                          
+                               
+                            oracle_cursor.execute(create_query) # exec폼미쳣다 
+                            oracle_conn.commit()
+                            try:  
                                 extracted_row = {col: convert_mssql_lob_to_string(first_row[idx]) for idx, col in enumerate(columns)}
-                                oracle_cursor.execute(insert_query, extracted_row)
-
-                                # 이후 행들 처리
+                                oracle_cursor.execute(insert_query, extracted_row) 
+              
                                 while True:
-                                    rows = ms_select_cursor.fetchmany(100)
+                                    rows = ms_select_cursor.fetchmany(100) #대규모 데이터 용량 
                                     if not rows:
                                         break
-
                                     extracted_ms_list = [{col: convert_mssql_lob_to_string(row[idx]) for idx, col in enumerate(columns)} for row in rows]
-                                    oracle_cursor.executemany(insert_query, extracted_ms_list)                                           
-                            except Exception as e:                            
-                                oracle_conn.rollback()                                    
-                            finally:
-                                oracle_conn.commit()
-                else:
-                    print("반환된 데이터가 없습니다.")
+                                    print(extracted_ms_list)
+                                    oracle_cursor.executemany(insert_query, extracted_ms_list)
 
-                    
-        
-    extract_sql_query()>>execute()
+                                oracle_conn.commit()
+                            except Exception as e:
+                                logging.error(f'Error occurred: {e}')
+                                oracle_conn.rollback()
+                                raise
+                else:
+                    logging.info("ETL할 MSSQL데이터가 없습니다.")
+
+    extract_sql_query
