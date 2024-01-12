@@ -10,8 +10,8 @@ import logging
 with DAG(
     dag_id='dag_bash_with_template',
     start_date=pendulum.datetime(2024, 1, 1, tz='Asia/Seoul'),
-    #schedule="*/2 * * * *",
-    schedule=False,
+    schedule='@daily',
+    #schedule=False,
     catchup=False
 ) as dag:
     bash_t1=BashOperator(

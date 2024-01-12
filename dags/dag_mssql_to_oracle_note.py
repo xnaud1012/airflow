@@ -18,7 +18,7 @@ with DAG(
     dag_id='dag_mssql_to_oracle_note',
     start_date=pendulum.datetime(2024, 1, 1, tz='Asia/Seoul'),
     #schedule="*/2 * * * *",
-    schedule=False,
+    schedule='@daily',
     catchup=False
 ) as dag:
 
