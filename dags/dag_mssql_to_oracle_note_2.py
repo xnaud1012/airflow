@@ -58,7 +58,7 @@ with DAG(
         with connect_ms() as ms_conn:
             select_result_df = pd.read_sql(get_sql(select_sql_path),ms_conn)
             columns = select_result_df.columns.tolist()
-            if (select_result_df)>0:
+            if len(select_result_df)>0:
                 with connect_oracle() as oracle_conn:  
                     try:
                         engine = create_engine("oracle+cx_oracle://", creator=oracle_conn, poolclass=NullPool)
