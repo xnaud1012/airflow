@@ -57,17 +57,14 @@ with DAG(
         # Connect to MS SQL Server
         with connect_ms() as ms_conn:
             try:
-                select_result_df = pd.read_sql(get_sql(select_sql_path),ms_conn)
-                print(select_result_df)
-
-    
+                select_result_df = pd.read_sql(get_sql(select_sql_path),ms_conn)    
                 if len(select_result_df)>0:               
                     try:
                         engine = create_engine("oracle+cx_oracle://", creator=connect_oracle, poolclass=NullPool)
                         chunksize = 1000
                         for start in range(0, len(select_result_df), chunksize):
                             end = min(start + chunksize, len(select_result_df))
-                            select_result_df.iloc[start:end].to_sql('your_table_name', con=engine, if_exists='append'
+                            select_result_df.iloc[start:end].to_sql('note', con=engine, if_exists='append'
                                                                     , index=False, chunksize=None) #index = False는 df의 인덱스를 db에 삽입X
                     except Exception as e:
                         logging.error(f'Error occurred: {e}')                  
