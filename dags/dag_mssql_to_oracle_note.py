@@ -12,13 +12,13 @@ from airflow.providers.microsoft.mssql.hooks.mssql import MsSqlHook
 
 import logging
 
-#inner join 도 read햘수 있는 지 확인 
+#inner join 도 read햘수 있는 지 확인해보기
 
 with DAG(
     dag_id='dag_mssql_to_oracle_note',
     start_date=pendulum.datetime(2024, 1, 1, tz='Asia/Seoul'),
     #schedule="*/2 * * * *",
-    schedule='@daily',
+    schedule='0 0 * * *',
     catchup=False
 ) as dag:
 
@@ -64,9 +64,11 @@ with DAG(
         ms_hook = MsSqlHook('mssql_default')
         ms_conn = ms_hook.get_conn()
         return ms_conn
-
+    
     def convert_mssql_lob_to_string(lob_data):
-        return lob_data if lob_data else ""
+        if lob_data is not None and isinstance(lob_data, cx_Oracle.LOB):
+            return lob_data.read()
+        return lob_data
 
     def set_last_run_time():
         Variable.set("timeStamp", pendulum.now('Asia/Seoul').to_datetime_string())
@@ -85,7 +87,7 @@ with DAG(
                 columns = [col[0].lower() for col in ms_select_cursor.description]
                 first_row = ms_select_cursor.fetchone()
 
-                if first_row: # ETL할 row가 존재할 떄만 로직 드갸쟈 /앗차 여기가 아니라구~~~!!//옮김
+                if first_row: # ETL할 row가 존재할 떄만 로직 
                     # 오라클 시작
                     with connect_oracle() as oracle_conn:
                         with oracle_conn.cursor() as oracle_cursor:

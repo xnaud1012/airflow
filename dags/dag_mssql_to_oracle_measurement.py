@@ -15,7 +15,7 @@ import logging
 with DAG(
     dag_id='dag_mssql_to_oracle_measurement',
     start_date=pendulum.datetime(2024, 1, 1, tz='Asia/Seoul'),
-    schedule='@daily',
+    schedule='0 0 * * *',
     catchup=False
 ) as dag:
 

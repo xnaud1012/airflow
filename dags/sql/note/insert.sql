@@ -1,0 +1,31 @@
+INSERT INTO NOTE (
+    encoding_concept_id,
+    language_concept_id,
+    note_class_concept_id,
+    note_date,
+    note_datetime,
+    note_id,
+    note_source_value,
+    note_text,
+    note_title,
+    note_type_concept_id,
+    person_id,
+    provider_id,
+    visit_detail_id,
+    visit_occurrence_id
+) VALUES (
+    :encoding_concept_id,
+    :language_concept_id,
+    :note_class_concept_id,
+    :note_date,
+    :note_datetime,
+    :note_id,
+    :note_source_value,
+    :note_text,
+    :note_title,
+    :note_type_concept_id,
+    :person_id,
+    :provider_id,
+    :visit_detail_id,
+    :visit_occurrence_id
+)
