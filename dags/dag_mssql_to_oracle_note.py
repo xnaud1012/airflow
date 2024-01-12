@@ -12,7 +12,7 @@ from airflow.providers.microsoft.mssql.hooks.mssql import MsSqlHook
 
 import logging
 
-#inner join 도 read햘수 있는 지 확인해보기
+
 
 with DAG(
     dag_id='dag_mssql_to_oracle_note',
