@@ -12,10 +12,13 @@ from airflow.providers.microsoft.mssql.hooks.mssql import MsSqlHook
 
 import logging
 
+#inner join 도 read햘수 있는 지 확인 
+
 with DAG(
-    dag_id='dag_mssql_to_oracle',
+    dag_id='dag_mssql_to_oracle_note',
     start_date=pendulum.datetime(2024, 1, 1, tz='Asia/Seoul'),
-    schedule="*/2 * * * *",
+    #schedule="*/2 * * * *",
+    schedule=False,
     catchup=False
 ) as dag:
 
@@ -25,6 +28,8 @@ with DAG(
 
         query = re.sub(r'[\t\s]+', ' ', query)
         query = re.sub(r'[\t\s]*,[\t\s]*', ', ', query)
+        query = re.sub(r'[\t\s]*and[\t\s]*', ' AND ', query, flags=re.IGNORECASE)
+        query = re.sub(r'[\t\s]*or[\t\s]*', ' OR ', query, flags=re.IGNORECASE)
         query = re.sub(r'[\t\s]*from[\t\s]*', ' FROM ', query, flags=re.IGNORECASE)
         query = re.sub(r'[\t\s]*where[\t\s]*', ' WHERE ', query, flags=re.IGNORECASE)
 
@@ -35,9 +40,9 @@ with DAG(
         ti = kwargs['ti']
         base_path = os.path.dirname(__file__)
 
-        select_sql_path = os.path.join(base_path, 'sql/ms_select.sql')
-        insert_sql_path = os.path.join(base_path, 'sql/ms_insert_pl.sql')
-        create_sql_path = os.path.join(base_path, 'sql/ms_create_pl.sql')
+        select_sql_path = os.path.join(base_path, 'sql/note/select.sql')
+        insert_sql_path = os.path.join(base_path, 'sql/note/insert.sql')
+        create_sql_path = os.path.join(base_path, 'sql/note/create.sql')
 
         select_query = clean_sql_query(select_sql_path)
         insert_query = clean_sql_query(insert_sql_path)
