@@ -48,7 +48,7 @@ with DAG(
         ti.xcom_push(key="create_query", value=create_query)
 
     def connect_oracle():
-        rdb = BaseHook.get_connection('conn-db-oracle-custom')
+        rdb = BaseHook.get_connection('oracle_xnaud')
         ora_con = cx_Oracle.connect(dsn=rdb.extra_dejson.get("dsn"),
                                     user=rdb.login,
                                     password=rdb.password,
