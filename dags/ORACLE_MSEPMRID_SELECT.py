@@ -48,8 +48,8 @@ with DAG(
     def execute(**kwargs):
         base_path = os.path.dirname(__file__)
 
-        select_sql_path = os.path.join(base_path, 'sql/note/select.sql')
-        create_sql_path = os.path.join(base_path, 'sql/note/create.sql')   
+        select_sql_path = os.path.join(base_path, 'sql/MSEPMRID/select.sql')
+        create_sql_path = os.path.join(base_path, 'sql/MSEPMRID/create.sql')   
 
 
 
