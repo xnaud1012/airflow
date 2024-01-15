@@ -13,7 +13,7 @@ import logging
 #데이터프레임 이용해서 SQL수행 
 
 with DAG(
-    dag_id='dag_mssql_to_oracle_note_2',
+    dag_id='ORACLE_MSEPMRID_SELECT',
     start_date=pendulum.datetime(2024, 1, 1, tz='Asia/Seoul'),
     #schedule="*/2 * * * *",
     schedule='0 0 * * *',
