@@ -45,31 +45,30 @@ with DAG(
 
 
     @task(task_id='execute')
-    def execute(**kwargs):
+    def execute():
         base_path = os.path.dirname(__file__)
 
         select_sql_path = os.path.join(base_path, 'sql/MSEPMRID/select.sql')
-        create_sql_path = os.path.join(base_path, 'sql/MSEPMRID/create.sql')   
+        create_sql_path = os.path.join(base_path, 'sql/MSEPMRID/create.sql')
 
-
-
-        # Connect to MS SQL Server
         with connect_oracle() as ora_conn:
-            
-            select_result_df = pd.read_sql(get_sql(select_sql_path),ora_conn)    
-            if len(select_result_df)<1:               
-                try:
-                    with connect_oracle().cursor() as oracle_cursor:
-                        oracle_cursor.execute(get_sql(create_sql_path))
-                        ora_conn.commit()
-
-                except Exception as e:
-                    logging.error(f'Error occurred: {e}')                  
-                    raise
-            else:
+            try:
+                select_result_df = pd.read_sql(get_sql(select_sql_path), ora_conn)
                 first_row = select_result_df.iloc[0]
                 logging.info(first_row)
                 print(first_row)
-     
+            except Exception as e:
+                try:
+                    with ora_conn.cursor() as oracle_cursor:
+                        oracle_cursor.execute(get_sql(create_sql_path))
+                        ora_conn.commit()
+                    select_result_df = pd.read_sql(get_sql(select_sql_path), ora_conn)
+                    first_row = select_result_df.iloc[0]
+                    logging.info(first_row)
+                    print(first_row)
+                except Exception as e:
+                    logging.error("Error occurred: %s", e)
+                    print('Error occurred:', e)
 
+    # DAG 내에서 execute 함수 호출
     execute()
