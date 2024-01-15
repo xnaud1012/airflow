@@ -3,6 +3,7 @@ from contextlib import closing
 import pandas as pd
 from airflow.models import Variable
 import os
+from airflow.utils.edgemodifier import Label
 import re
 from airflow.hooks.base import BaseHook 
 import pendulum
@@ -113,4 +114,4 @@ with DAG(
 
                     
         
-    extract_sql_query()>>execute()
+    extract_sql_query()>>Label('oracle에서 postgres로 insert')>>execute()
