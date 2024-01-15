@@ -48,7 +48,9 @@ with DAG(
     python_branch_task >> [task_a, task_b, task_c] # python_branch_task 라는 태스크가 선행 태스크, 뒤의 []안에 있는 태스크들이 후행 태스크 
 
     '''
-    from airflow import DAG
+# task branch 데코레이터 이용하기 
+
+from airflow import DAG
 from datetime import datetime
 from airflow.operators.python import PythonOperator
 from airflow.decorators import task
