@@ -67,7 +67,9 @@ with DAG(
                     logging.error(f'Error occurred: {e}')                  
                     raise
             else:
-                logging.info(select_result_df)
+                first_row = select_result_df.iloc[0]
+                logging.info(first_row)
+                print(first_row)
      
 
     execute()
