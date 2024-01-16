@@ -222,7 +222,7 @@
                     return response.json();
                 })
                 .then(data => {
-                const columns = responseData.columns.map(col => ({
+                const columns = data.columns.map(col => ({
                         header: col.header,
                         name: col.name,
                         align: "left",
