@@ -89,7 +89,10 @@ class reviewAppBuilderBaseView(AppBuilderBaseView):
                 select_result_df = pd.read_sql(sqlQuery, ora_con)       
                 json_result = select_result_df.to_json(orient='records')
                 json_obj = json.loads(json_result)
-                return json_obj
+
+                #컬럼 동적 생성을 위해 dataframe에서 column_info 추출 
+                columns_info = [{"header": col, "name": col} for col in select_result_df.columns]
+                return {"columns": columns_info, "data": json_obj}
 
             except Exception as e:
                 logging.error("Error occurred: %s", e)

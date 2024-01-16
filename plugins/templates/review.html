@@ -222,6 +222,17 @@
                     return response.json();
                 })
                 .then(data => {
+                const columns = responseData.columns.map(col => ({
+                        header: col.header,
+                        name: col.name,
+                        align: "left",
+                        editor: 'text',
+                        whiteSpace: 'normal',
+                        formatter: function (e) {
+                            return e.value;
+                        }
+                    }));
+                    createdGrid.setColumns(columns); // 컬럼 도엊ㄱ 생성 
                     createdGrid.resetData(data);
                 })
                 .catch(error => {
