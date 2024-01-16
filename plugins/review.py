@@ -89,6 +89,7 @@ class reviewAppBuilderBaseView(AppBuilderBaseView):
                 select_result_df = pd.read_sql(sqlQuery, ora_con)       
                 json_result = select_result_df.to_json(orient='records')
                 json_obj = json.loads(json_result)
+                print(select_result_df)
 
                 #컬럼 동적 생성을 위해 dataframe에서 column_info 추출 
                 columns_info = [{"header": col, "name": col} for col in select_result_df.columns]

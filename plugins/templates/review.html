@@ -221,8 +221,9 @@
                     }
                     return response.json();
                 })
-                .then(data => {
-                const columns = data.columns.map(col => ({
+                .then(responseData => {
+                    console.log(responseData)
+                    const columns = responseData.columns.map(col => ({
                         header: col.header,
                         name: col.name,
                         align: "left",
@@ -232,8 +233,12 @@
                             return e.value;
                         }
                     }));
-                    createdGrid.setColumns(columns); // 컬럼 도엊ㄱ 생성 
-                    createdGrid.resetData(data);
+
+                    // Grid에 컬럼 설정
+                    createdGrid.setColumns(columns);
+
+                    // Grid에 데이터 설정
+                    createdGrid.resetData(responseData.data);
                 })
                 .catch(error => {
                     console.error('There was a problem with the fetch operation:', error);
