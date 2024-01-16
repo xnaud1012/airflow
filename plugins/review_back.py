@@ -22,7 +22,7 @@ bp = Blueprint(
 
 
 class reviewAppBuilderBaseView(AppBuilderBaseView):
-    default_view = "review"
+    default_view = "review_"
 
     def extract_select_sql_query(self):
 
@@ -63,7 +63,7 @@ class reviewAppBuilderBaseView(AppBuilderBaseView):
             (permissions.ACTION_CAN_READ, permissions.RESOURCE_WEBSITE),
         ]
     )
-    def review(self):
+    def review_(self):
         csrf_token = generate_csrf()       
         return self.render_template("review_.html", content="DEV", csrf_token=csrf_token)
     
@@ -127,8 +127,8 @@ class reviewAppBuilderBaseView(AppBuilderBaseView):
 
 v_appbuilder_view = reviewAppBuilderBaseView()
 v_appbuilder_package = {
-    "name": "review", # this is the name of the link displayed
-    "category": "review", # 내가 생성하고자 하는 탭 이름.
+    "name": "review_", # this is the name of the link displayed
+    "category": "review_", # 내가 생성하고자 하는 탭 이름.
     "view": v_appbuilder_view
 }
    
