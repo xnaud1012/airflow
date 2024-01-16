@@ -68,12 +68,13 @@ class reviewAppBuilderBaseView(AppBuilderBaseView):
     )
     def review(self):
         csrf_token = generate_csrf()       
-        return self.render_template("review.html", content="DEV", csrf_token=csrf_token)
+        return self.render_template("review_.html", content="DEV", csrf_token=csrf_token)
 
     @expose('/getData', methods=['GET', 'POST'])
     def getData(self):
         # 데이터베이스 연결 가져오기
         import json
+        print('?????????????????????????????')
         
         with open('../airflow/plugins/static/sql/select2.sql', 'r') as file:
             sqlQuery = file.read()
