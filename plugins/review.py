@@ -1,15 +1,18 @@
 from airflow.plugins_manager import AirflowPlugin
 from flask import Blueprint
+import pandas as pd
 from airflow.www.auth import has_access
 from airflow.security import permissions
 from flask_appbuilder import expose, BaseView as AppBuilderBaseView
 from flask import jsonify
 from flask import request, jsonify
 from airflow.providers.postgres.hooks.postgres import PostgresHook
+from airflow.hooks.base import BaseHook
 import logging
 import os
 from datetime import datetime
 import re
+import cx_Oracle
 from flask_wtf.csrf import generate_csrf
 
 bp = Blueprint(
@@ -66,31 +69,35 @@ class reviewAppBuilderBaseView(AppBuilderBaseView):
     def review(self):
         csrf_token = generate_csrf()       
         return self.render_template("review.html", content="DEV", csrf_token=csrf_token)
-    
-    
+
     @expose('/getData', methods=['GET', 'POST'])
     def getData(self):
-
-        pg_hook = PostgresHook('conn-db-postgres-custom') 
         # 데이터베이스 연결 가져오기
-        conn = pg_hook.get_conn()
-        cursor = conn.cursor()
+        import json
+        
+        with open('../airflow/plugins/static/sql/select2.sql', 'r') as file:
+            sqlQuery = file.read()
 
-        query = self.extract_select_sql_query();
-        cursor.execute(query);
-        data = cursor.fetchall();
 
-        column_names = [desc[0] for desc in cursor.description]
-        result = []
+        rdb = BaseHook.get_connection('oracle_xnaud')
+        ora_con = cx_Oracle.connect(dsn=rdb.extra_dejson.get("dsn"),
+                                    user=rdb.login,
+                                    password=rdb.password,
+                                    encoding="UTF-8")
+        with ora_con :
+            try:
+                select_result_df = pd.read_sql(sqlQuery, ora_con)       
+                json_result = select_result_df.to_json(orient='records')
+                json_obj = json.loads(json_result)
+                return json_obj
 
-        for row in data:
-            row_data = {}
-            for i, col_name in enumerate(column_names):
-                row_data[col_name] = row[i]
-            result.append(row_data)              
-        #new_result= {"result_data":result}
-  
-        return jsonify(result)
+            except Exception as e:
+                logging.error("Error occurred: %s", e)
+                print('Error occurred:', e)
+                return "1"
+
+
+
     
     @expose('/updateData', methods=['POST'])
     def updateData(self):
