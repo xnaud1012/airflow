@@ -68,7 +68,7 @@ class reviewAppBuilderBaseView(AppBuilderBaseView):
     )
     def review(self):
         csrf_token = generate_csrf()       
-        return self.render_template("review_.html", content="DEV", csrf_token=csrf_token)
+        return self.render_template("review.html", content="DEV", csrf_token=csrf_token)
 
     @expose('/getData', methods=['GET', 'POST'])
     def getData(self):
