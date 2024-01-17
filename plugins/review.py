@@ -86,7 +86,9 @@ class reviewAppBuilderBaseView(AppBuilderBaseView):
                                     encoding="UTF-8")
         with ora_con :
             try:
-                select_result_df = pd.read_sql(sqlQuery, ora_con)       
+                select_result_df = pd.read_sql(sqlQuery, ora_con)   
+                print('..................................................') 
+                print(select_result_df)   
                 json_result = select_result_df.to_json(orient='records')
                 json_obj = json.loads(json_result)         
      
