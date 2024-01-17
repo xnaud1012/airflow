@@ -87,16 +87,15 @@ class reviewAppBuilderBaseView(AppBuilderBaseView):
         with ora_con :
             try:
                 select_result_df = pd.read_sql(sqlQuery, ora_con)   
-                print('..................................................') 
-                print(select_result_df)   
+
                 json_result = select_result_df.to_json(orient='records')
                 json_obj = json.loads(json_result)         
      
 
                 head_info_json = json.loads(select_result_df.iloc[0]['HEAD_INFO'])
-                print(head_info_json)
+
                 #컬럼 동적 생성을 위해 dataframe에서 column_info 추출 
-                columns_info = [{"header": item['column'], "name": item['name']} for item in head_info_json]
+                columns_info = [{"header": item['name'], "name": item['column']} for item in head_info_json]
                 return {"columns": columns_info, "data": json_obj}
 
             except Exception as e:
