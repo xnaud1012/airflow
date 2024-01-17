@@ -91,8 +91,9 @@ class reviewAppBuilderBaseView(AppBuilderBaseView):
                 json_obj = json.loads(json_result)         
      
 
+                head_info_json = json.loads(select_result_df.iloc[0]['HEAD_INFO'])
                 #컬럼 동적 생성을 위해 dataframe에서 column_info 추출 
-                columns_info = [{"header": col.get('column'), "name":  col.get('name')} for col in select_result_df.head_info]
+                columns_info = [{"header": item['column'], "name": item['name']} for item in head_info_json]
                 return {"columns": columns_info, "data": json_obj}
 
             except Exception as e:
