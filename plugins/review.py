@@ -74,8 +74,7 @@ class reviewAppBuilderBaseView(AppBuilderBaseView):
     def getData(self):
         # 데이터베이스 연결 가져오기
         import json
-        print('?????????????????????????????')
-        
+      
         with open('../airflow/plugins/static/sql/select2.sql', 'r') as file:
             sqlQuery = file.read()
 
@@ -89,13 +88,11 @@ class reviewAppBuilderBaseView(AppBuilderBaseView):
             try:
                 select_result_df = pd.read_sql(sqlQuery, ora_con)       
                 json_result = select_result_df.to_json(orient='records')
-                json_obj = json.loads(json_result)
-                print('************************************************************')
-                print(json_obj)
-    
+                json_obj = json.loads(json_result)         
+     
 
                 #컬럼 동적 생성을 위해 dataframe에서 column_info 추출 
-                columns_info = [{"header": col, "name": col} for col in select_result_df.columns]
+                columns_info = [{"header": col.get('column'), "name":  col.get('name')} for col in select_result_df.head_info]
                 return {"columns": columns_info, "data": json_obj}
 
             except Exception as e:

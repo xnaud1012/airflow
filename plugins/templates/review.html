@@ -113,10 +113,10 @@
 
     });
 
-    $(window).on('resize', function() {
+ //   $(window).on('resize', function() {
       //  var gridWidth = window.grid.el.clientWidth;       
       //  var newWidth = window.innerWidth * 0.95;      
-    });
+ //   });
     function initGrid() { // 그리드 객체 생성        
 
         const GridCustom = tui.Grid;         
@@ -166,7 +166,7 @@
                 },
             bodyHeight: 200,
             contextMenu: null, 
-            columns: [
+          /*  columns: [
                     {
                         header: '테스트아이디',
                         name: 'test_id',
@@ -206,7 +206,7 @@
                             return e.value
                         },
                     },
-                ],
+                ],*/
             
             });
         window.grid = newGrid;
