@@ -7,6 +7,8 @@ from airflow.hooks.base import BaseHook
 import pendulum
 from airflow.decorators import task
 from airflow import DAG
+import site
+
 from airflow.providers.microsoft.mssql.hooks.mssql import MsSqlHook
 
 import logging
@@ -52,7 +54,7 @@ with DAG(
         create_sql_path = os.path.join(base_path, 'sql/note/create.sql')
         insert_sql_path = os.path.join(base_path, 'sql/note/insert.sql')        
 
-
+        print(site.getsitepackages())
 
         # Connect to MS SQL Server
         with connect_ms() as ms_conn:
