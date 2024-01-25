@@ -3,8 +3,7 @@ import pendulum
 from airflow import DAG
 from airflow.providers.jdbc.hooks.jdbc import JdbcHook
 from airflow.decorators import task
-
-
+import logging
 
 with DAG(
     dag_id='jdbc_bridge_mssql',
