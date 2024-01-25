@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 import pendulum
 from airflow import DAG
-from airflow.providers.jdbc.operators.jdbc import JdbcOperator
+from airflow.providers.jdbc.operators import JdbcOperator
 import logging
 #데이터프레임 이용해서 SQL수행 
 
