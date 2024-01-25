@@ -1,24 +1,28 @@
 from datetime import datetime, timedelta
 import pendulum
 from airflow import DAG
-from airflow.providers.jdbc.operators import JdbcOperator
+from airflow.operators.python import PythonOperator
+from airflow.providers.jdbc.hooks.jdbc import JdbcHook
 import logging
-#데이터프레임 이용해서 SQL수행 
+
+# 데이터프레임 이용해서 SQL수행 
+
+def my_custom_function(**kwargs):
+    jdbc_hook = JdbcHook(jdbc_conn_id="MSSQL_JDBC_CONN")
+    records = jdbc_hook.get_records("SELECT * FROM DEATH")
+    for record in records:
+        print(record)
 
 with DAG(
     dag_id='jdbc_bridge_mssql',
     start_date=pendulum.datetime(2024, 1, 1, tz='Asia/Seoul'),
-    #schedule="*/2 * * * *",
-    schedule='0 0 * * *',
+    schedule_interval='0 0 * * *',
     catchup=False
 ) as dag:
-    
 
-    jdbc_task = JdbcOperator(
-    task_id='run_sql_query',
-    sql='SELECT * FROM DEATH',
-    jdbc_conn_id='MSSQL_JDBC_CONN',  # Airflow에서 설정한 연결 ID
-    dag=dag,
+    run_my_query = PythonOperator(
+        task_id='task1',
+        python_callable=my_custom_function
     )
 
-    jdbc_task 
+run_my_query
