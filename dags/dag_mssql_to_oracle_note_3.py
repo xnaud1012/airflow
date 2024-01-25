@@ -16,7 +16,8 @@ with DAG(
         records = jdbc_hook.get_records("SELECT * FROM DEATH")
         asdf=""
         for record in records:
-            asdf+=record
+            asdf += ' '.join(map(str, record)) + "\n"
+
         
 
         return asdf
