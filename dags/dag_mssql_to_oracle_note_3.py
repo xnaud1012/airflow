@@ -9,8 +9,8 @@ with DAG(
     schedule_interval='0 0 * * *',
     catchup=False
 ) as dag:
-    @task(task_id='execute')
-    def execute(**kwargs):
+    @task(task_id='execute2')
+    def execute2(**kwargs):
         print('start')
         jdbc_hook = JdbcHook(jdbc_conn_id="MSSQL_JDBC_CONN")
         records = jdbc_hook.get_records("SELECT * FROM DEATH")
@@ -22,4 +22,4 @@ with DAG(
         return asdf
 
 
-execute()
+execute2()
