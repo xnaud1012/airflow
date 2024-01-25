@@ -1,4 +1,5 @@
-from datetime import datetime, timedelta, pendulum
+from datetime import datetime, timedelta
+import pendulum
 from airflow import DAG
 from airflow.providers.jdbc.operators.jdbc import JdbcOperator
 import logging
