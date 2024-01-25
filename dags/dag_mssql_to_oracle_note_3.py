@@ -10,11 +10,11 @@ with DAG(
     catchup=False
 ) as dag:
     @task(task_id='execute')
-    def my_custom_function(**kwargs):
+    def execute(**kwargs):
         jdbc_hook = JdbcHook(jdbc_conn_id="MSSQL_JDBC_CONN")
         records = jdbc_hook.get_records("SELECT * FROM DEATH")
         for record in records:
             print(record)
 
 
-my_custom_function()
+execute()

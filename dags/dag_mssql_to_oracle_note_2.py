@@ -54,8 +54,7 @@ with DAG(
         create_sql_path = os.path.join(base_path, 'sql/note/create.sql')
         insert_sql_path = os.path.join(base_path, 'sql/note/insert.sql')        
 
-        print(site.getsitepackages())
-
+ 
         # Connect to MS SQL Server
         with connect_ms() as ms_conn:
             try:
