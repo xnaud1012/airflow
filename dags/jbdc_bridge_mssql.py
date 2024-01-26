@@ -20,6 +20,7 @@ with DAG(
         print('start')
         if not jpype.isJVMStarted():
             jpype.startJVM()
+            print('was not started***********')
 
         Driver = jpype.JClass('com.microsoft.sqlserver.jdbc.SQLServerDriver')
 
