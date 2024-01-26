@@ -4,6 +4,7 @@ from airflow.providers.jdbc.hooks.jdbc import JdbcHook
 from airflow.decorators import task
 import jpype
 import jpype.imports
+import logging
 from jpype.types import *
 with DAG(
     dag_id='jdbc_bridge_mssql',
@@ -32,12 +33,12 @@ with DAG(
 
     @task(task_id='execute')
     def execute(**kwargs):
-        print('start')
+    
         if not jpype.isJVMStarted():
             jpype.startJVM()
 
         java_class_path = jpype.java.lang.System.getProperty("java.class.path")
-        print(f"Java Class Path: {java_class_path}")
+
 
         Driver = jpype.JClass('com.microsoft.sqlserver.jdbc.SQLServerDriver')
         jpype.java.sql.DriverManager.registerDriver(Driver())
@@ -45,8 +46,9 @@ with DAG(
         jdbc_hook = JdbcHook(jdbc_conn_id="MSSQL_JDBC_CONN")
 
 
-        print(jdbc_hook)
-        print('************************************************************************************************************')
+        for key, value in vars(jdbc_hook).items():
+            print(f"{key}: {value}")
+       
         url = 'jdbc:sqlserver://10.91.xx.xx:xxxx;databaseName=xnaud;user=sa;password=aaaaa;trustServerCertificate=true;'
         conn = jpype.java.sql.DriverManager.getConnection(url)
         stmt = conn.createStatement()
