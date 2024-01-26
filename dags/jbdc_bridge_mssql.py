@@ -46,7 +46,7 @@ with DAG(
         jpype.java.sql.DriverManager.registerDriver(Driver())
 
        
-        url = 'jdbc:sqlserver://10.91.102.97:1433;databaseName=xnaud;user=sa;password=johnson0102;'
+        url = 'jdbc:sqlserver://10.91.102.97:1433;databaseName=xnaud;user=sa;password=johnson0102;trustServerCertificate=true;'
         conn = jpype.java.sql.DriverManager.getConnection(url)
         stmt = conn.createStatement()
 
