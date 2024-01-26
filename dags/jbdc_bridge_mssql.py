@@ -37,20 +37,31 @@ with DAG(
     def execute(**kwargs):
         print('start')
         if not jpype.isJVMStarted():
-            jpype.startJVM(jpype.getDefaultJVMPath(), '-Djava.class.path=/opt/sqljdbc_12.4/kor/jars/mssql-jdbc-12.4.2.jre11.jar')
-# System 클래스를 사용하여 java.class.path 속성값을 가져옵니다.
+            jpype.startJVM()
+
         java_class_path = jpype.java.lang.System.getProperty("java.class.path")
         print(f"Java Class Path: {java_class_path}")
 
         Driver = jpype.JClass('com.microsoft.sqlserver.jdbc.SQLServerDriver')
+        jpype.java.sql.DriverManager.registerDriver(Driver())
 
-        jdbc_hook = LoggingJdbcHook(jdbc_conn_id="MSSQL_JDBC_CONN")
+       
+        url = 'jdbc:sqlserver://10.91.102.97:1433;databaseName=xnaud;user=sa;password=johnson0102;'
+        conn = jpype.java.sql.DriverManager.getConnection(url)
+        stmt = conn.createStatement()
 
-        records = jdbc_hook.get_records("SELECT * FROM DEATH")
 
-        if records == None:
-            records="sssssss"
-        return records
+        #jdbc_hook = LoggingJdbcHook(jdbc_conn_id="MSSQL_JDBC_CONN")
+        resultSet = stmt.executeQuery("SELECT TOP 5 * FROM DEATH")
+        while resultSet.next():
+          print(resultSet.getString(1))  # 첫 번째 컬럼의 데이터 출력
+
+        resultSet.close()
+        stmt.close()
+        conn.close()
+
+        if jpype.isJVMStarted():
+            jpype.shutdownJVM()
 
     execute()
 
