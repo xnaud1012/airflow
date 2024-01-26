@@ -21,7 +21,8 @@ with DAG(
         if not jpype.isJVMStarted():
             jpype.startJVM()
 
-        Driver = jpype.JClass('com.your.jdbc.DriverClassName')
+        Driver = jpype.JClass('com.microsoft.sqlserver.jdbc.SQLServerDriver')
+
         print(Driver)
         jdbc_hook = JdbcHook(jdbc_conn_id="MSSQL_JDBC_CONN")
         print(jdbc_hook)
