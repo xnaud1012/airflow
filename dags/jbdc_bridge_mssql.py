@@ -2,6 +2,9 @@ import pendulum
 from airflow import DAG
 from airflow.providers.jdbc.hooks.jdbc import JdbcHook
 from airflow.decorators import task
+import jpype
+import jpype.imports
+from jpype.types import *
 
 with DAG(
     dag_id='jdbc_bridge_mssql',
@@ -12,6 +15,8 @@ with DAG(
 
     @task(task_id='execute')
     def execute(**kwargs):
+        if not jpype.isJVMStarted():
+            jpype.startJVM()
         # JdbcHook 인스턴스 생성, 'MSSQL_JDBC_CONN'은 Airflow Connection ID입니다.
         jdbc_hook = JdbcHook(jdbc_conn_id="MSSQL_JDBC_CONN")
         
@@ -20,5 +25,8 @@ with DAG(
         
         for record in records:
             print(record)  # 조회된 레코드 출력
+
+        if jpype.isJVMStarted():
+            jpype.shutdownJVM()
 
     execute()
