@@ -25,10 +25,13 @@ with DAG(
         Driver = jpype.JClass('com.microsoft.sqlserver.jdbc.SQLServerDriver')
 
         print(Driver)
+        print('**************************************************************** Driver ****************************************************************')
         jdbc_hook = JdbcHook(jdbc_conn_id="MSSQL_JDBC_CONN")
         print(jdbc_hook)
+        print('**************************************************************** jdbc_hook ****************************************************************')
         records = jdbc_hook.get_records("SELECT * FROM DEATH")
         print(records)
+        print('**************************************************************** records ****************************************************************')
         if records == None:
             records="sssssss"
         return records
