@@ -37,8 +37,10 @@ with DAG(
     def execute(**kwargs):
         print('start')
         if not jpype.isJVMStarted():
-            jpype.startJVM()
-            print('was not started***********')
+            jpype.startJVM(jpype.getDefaultJVMPath(), '-Djava.class.path=/opt/sqljdbc_12.4/kor/jars/mssql-jdbc-12.4.2.jre11.jar')
+# System 클래스를 사용하여 java.class.path 속성값을 가져옵니다.
+        java_class_path = jpype.java.lang.System.getProperty("java.class.path")
+        print(f"Java Class Path: {java_class_path}")
 
         Driver = jpype.JClass('com.microsoft.sqlserver.jdbc.SQLServerDriver')
 
