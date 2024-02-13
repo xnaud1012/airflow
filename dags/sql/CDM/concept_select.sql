@@ -1,0 +1,1 @@
+select * from cdm.concept c limit 10 ;
