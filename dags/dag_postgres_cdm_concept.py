@@ -43,8 +43,8 @@ with DAG(
                 select_result_df = pd.read_sql(get_sql(select_sql_path), post_conn)
                 first_row = select_result_df.iloc[0]
                 logging.info(first_row)
-                print(first_row)
-        return first_row
+
+        return select_result_df
            
     # DAG 내에서 execute 함수 호출
     execute()
