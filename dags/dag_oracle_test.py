@@ -13,7 +13,7 @@ import logging
 #데이터프레임 이용해서 SQL수행 
 
 with DAG(
-    dag_id='dat_oracle_test',
+    dag_id='dag_oracle_test',
     start_date=pendulum.datetime(2024, 1, 1, tz='Asia/Seoul'),
     #schedule="*/2 * * * *",
     schedule='0 0 * * *',
@@ -21,8 +21,10 @@ with DAG(
 ) as dag:
 
     def connect_oracle():
+        #dsnStr = cx_Oracle.makedsn("10.1.3.21", "1521", "cnuhods")
         rdb = BaseHook.get_connection('cnuh_oracle_conn')
-        ora_con = cx_Oracle.connect(dsn=rdb.extra_dejson.get("dsn"),
+        dsnStr = cx_Oracle.makedsn(rdb.host, rdb.port, rdb.schema)
+        ora_con = cx_Oracle.connect(dsn=dsnStr,
                                     user=rdb.login,
                                     password=rdb.password,
                                     encoding="UTF-8")
