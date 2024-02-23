@@ -120,7 +120,10 @@
 
         $(window).on('resize', function() {         
     
-            var nowWindow = $(window).width();         
+            var nowWindow = $(window).width();      
+            var gridWidth = $('#grid').width();           
+            console.log(gridWidth)
+            console.log(nowWindow)
             var afterLength = nowWindow * 0.92;   
             $('#grid .tui-grid-rside-area').width(afterLength);         
 
