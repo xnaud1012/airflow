@@ -54,9 +54,10 @@ with DAG(
                 p_ippr_id = 'ID2002'  # 예시 ID
                 result_out = cursor.var(cx_Oracle.NUMBER)  # 결과를 저장할 변수
                 cursor.callproc("XNAUD.find_person_by_ippr_id",[p_ippr_id,result_out])
-                result= result_out.getvalue()        
+                result= result_out.getvalue()       
+        print(result) 
         
-        return result()
+        return result
            
     # DAG 내에서 execute 함수 호출
     execute()
