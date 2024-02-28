@@ -10,3 +10,4 @@ FROM (
 SELECT cte.HEAD_INFO, m.* FROM CTE
 INNER JOIN 
 MSEPMRID m ON 1=1 
+WHERE m.some_column =: 
