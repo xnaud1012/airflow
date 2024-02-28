@@ -4,8 +4,9 @@ from airflow.hooks.base import BaseHook
 import pendulum
 from airflow.decorators import task
 from airflow import DAG
+from datetime import timedelta
 
-
+   
 with DAG(
     dag_id='dag_oracle_to_oracle',
     start_date=pendulum.datetime(2024, 1, 1, tz='Asia/Seoul'),
@@ -34,7 +35,7 @@ with DAG(
         return sqlQuery
 
 
-    @task(task_id='execute1')
+    @task(task_id='execute1', retries=3, retry_delay=timedelta(minutes=5))
     def execute1():
         result="";
 
