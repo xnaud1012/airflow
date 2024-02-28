@@ -40,8 +40,8 @@ with DAG(
         return sqlQuery
 
 
-    @task(task_id='execute')
-    def execute():
+    @task(task_id='execute1')
+    def execute1():
         #base_path = os.path.dirname(__file__)
         base_path = os.path.dirname(os.path.abspath(__file__))
         oracle_path = os.path.join(base_path, 'sql/ORACLE/test.sql')
@@ -58,6 +58,25 @@ with DAG(
         print(result) 
         
         return result
+    
+    @task(task_id='execute2')
+    def execute2():
+        #base_path = os.path.dirname(__file__)
+        base_path = os.path.dirname(os.path.abspath(__file__))
+        oracle_path = os.path.join(base_path, 'sql/ORACLE/test.sql')
+        
+        #procedure = get_sql(oracle_path)
+        result="";
+
+        with connect_oracle() as ora_conn:
+            with ora_conn.cursor() as cursor:
+                p_ippr_id = '105'  # 예시 ID
+                result_out = cursor.var(cx_Oracle.NUMBER)  # 결과를 저장할 변수
+                cursor.callproc("XNAUD.find_person_by_person_id",[p_ippr_id,result_out])
+                result= result_out.getvalue()       
+        print(result) 
+        
+        return result
            
     # DAG 내에서 execute 함수 호출
-    execute()
+    execute1() >> execute2()
